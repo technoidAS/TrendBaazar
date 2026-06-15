@@ -1,0 +1,120 @@
+/* Loader Stylesheet for TrendBaazar */
+.loader-spinner-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-lg);
+  width: 100%;
+}
+
+.loader-spinner {
+  border: 3px solid rgba(168, 85, 247, 0.1);
+  border-top-color: var(--primary);
+  border-radius: var(--radius-full);
+  animation: spin 0.8s infinite linear;
+}
+
+.loader-spinner-sm { width: 24px; height: 24px; border-width: 2px; }
+.loader-spinner-md { width: 40px; height: 40px; }
+.loader-spinner-lg { width: 64px; height: 64px; border-width: 4px; }
+
+/* Fullscreen Loader */
+.loader-fullscreen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: var(--bg-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: var(--z-toast);
+}
+
+.loader-fullscreen-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.loader-spin-logo {
+  width: 50px;
+  height: 50px;
+  border: 3px solid rgba(6, 182, 212, 0.15);
+  border-top-color: var(--secondary);
+  border-radius: var(--radius-full);
+  animation: spin 0.6s infinite linear;
+}
+
+.loader-fullscreen-text {
+  font-family: var(--font-display);
+  font-size: var(--font-size-2xl);
+  font-weight: var(--weight-extrabold);
+  background: var(--gradient-brand);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: 0.05em;
+}
+
+/* Skeleton Loading Shimmer */
+.skeleton-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: var(--space-lg);
+  width: 100%;
+}
+
+.skeleton-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-lg);
+  padding: var(--space-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  overflow: hidden;
+}
+
+.skeleton-element {
+  background: linear-gradient(
+    90deg,
+    var(--bg-tertiary) 25%,
+    rgba(255, 255, 255, 0.03) 37%,
+    var(--bg-tertiary) 63%
+  );
+  background-size: 400% 100%;
+  animation: shimmer 1.4s ease infinite;
+  border-radius: var(--radius-sm);
+}
+
+.skeleton-image {
+  height: 200px;
+  border-radius: var(--radius-md);
+}
+
+.skeleton-title {
+  height: 20px;
+  width: 70%;
+}
+
+.skeleton-text {
+  height: 14px;
+  width: 90%;
+}
+
+.skeleton-price {
+  height: 24px;
+  width: 40%;
+  margin-top: var(--space-xs);
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}

@@ -1,0 +1,16 @@
+/* Aggregate Theme Style Loader for TrendBaazar */
+@import './colors.css';
+@import './variables.css';
+@import './typography.css';
+
+/* Initialize global elements tied specifically to the theme config */
+html {
+  font-family: var(--font-body);
+  color-scheme: dark light;
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  transition: background-color var(--transition-normal), color var(--transition-normal);
+}

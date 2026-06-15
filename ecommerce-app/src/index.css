@@ -1,0 +1,4 @@
+/* Root Entry Stylesheet for TrendBaazar */
+@import './styles/global.css';
+@import './styles/utilities.css';
+@import './styles/animations.css';

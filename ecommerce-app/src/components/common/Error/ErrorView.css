@@ -1,0 +1,45 @@
+/* Error view container panel */
+.error-view-container {
+  max-width: 500px;
+  margin: var(--space-3xl) auto;
+  padding: var(--space-2xl) var(--space-xl);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-md);
+  border: 1px solid rgba(239, 68, 68, 0.2) !important;
+  box-shadow: 0 10px 40px rgba(239, 68, 68, 0.05);
+}
+
+.error-icon-wrapper {
+  width: 64px;
+  height: 64px;
+  border-radius: var(--radius-full);
+  background: rgba(239, 68, 68, 0.05);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  margin-bottom: var(--space-xs);
+  box-shadow: 0 0 15px rgba(239, 68, 68, 0.1);
+}
+
+.error-view-title {
+  font-family: var(--font-display);
+  font-size: var(--font-size-xl);
+  font-weight: var(--weight-bold);
+  color: var(--text-primary);
+  margin: 0;
+  letter-spacing: 0.02em;
+}
+
+.error-view-message {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  line-height: var(--lh-normal);
+  margin: 0;
+  max-width: 380px;
+}
+
+.error-view-actions {
+  margin-top: var(--space-sm);
+  width: 100%;
+}

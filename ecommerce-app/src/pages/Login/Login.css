@@ -1,0 +1,175 @@
+/* Login/Register Stylesheet for TrendBaazar */
+.login-page-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - var(--header-height));
+  padding: var(--space-xl) var(--space-md);
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Minimal centered card default */
+.login-card-wrapper {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 420px;
+  min-height: auto;
+  overflow: hidden;
+  border-radius: var(--radius-xl);
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  position: relative;
+  z-index: 2;
+}
+
+/* Hide brand marketing completely for minimal UI */
+.login-brand-pane {
+  display: none !important;
+}
+
+/* Form Entry Pane */
+.login-form-pane {
+  width: 100%;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-xl) var(--space-lg);
+}
+
+.login-form-wrapper {
+  width: 100%;
+  max-width: 380px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+.login-form-header {
+  text-align: left;
+}
+
+.auth-title {
+  font-family: var(--font-display);
+  font-size: var(--font-size-2xl);
+  font-weight: var(--weight-bold);
+  margin-bottom: var(--space-2xs);
+}
+
+.auth-subtitle {
+  font-size: var(--font-size-sm);
+  color: var(--text-muted);
+}
+
+/* Auth banner warning */
+.auth-error-banner {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  color: var(--error);
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  font-weight: var(--weight-medium);
+  text-align: left;
+}
+
+.auth-form-tag {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.demo-credentials-helper {
+  font-size: 11px;
+  color: var(--text-muted);
+  text-align: left;
+}
+
+.auth-submit-btn {
+  width: 100%;
+  margin-top: var(--space-xs);
+}
+
+/* Blurred Home Page background snapshot */
+.blurred-homepage-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  filter: blur(14px) brightness(0.32);
+  pointer-events: none;
+  overflow: hidden;
+  user-select: none;
+  max-height: 100%;
+  opacity: 0.85;
+  transform: scale(1.02); /* Crop edge-blur glitches */
+}
+
+/* Light mode adjustments for blurred background to keep it bright */
+.theme-light .blurred-homepage-bg {
+  filter: blur(14px) brightness(0.92);
+  opacity: 0.95;
+}
+
+/* Floating Interactive Bubbles Background */
+.login-page-bubbles {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.bubble-item {
+  color: var(--secondary);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+  will-change: transform, width, height;
+}
+
+.bubble-item:hover {
+  background: rgba(6, 182, 212, 0.15) !important;
+  border-color: var(--secondary) !important;
+  color: var(--secondary) !important;
+  box-shadow: var(--shadow-glow-cyan) !important;
+}
+
+/* Mobile responsive popup from bottom sheet drawer */
+@media (max-width: 768px) {
+  .login-page-container {
+    align-items: flex-end; /* Align sheet to bottom of screen */
+    padding: 0;
+  }
+
+  .login-card-wrapper {
+    width: 100%;
+    max-width: 100%;
+    border-radius: 24px 24px 0 0;
+    border-bottom: none;
+    border-left: none;
+    border-right: none;
+    margin: 0;
+    /* Slide up transition on enter */
+    transform: translateY(100%);
+    animation: slide-up-sheet 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  .login-form-pane {
+    padding: var(--space-xl) var(--space-md) calc(var(--space-2xl) + 20px) var(--space-md);
+  }
+}
+
+@keyframes slide-up-sheet {
+  to {
+    transform: translateY(0);
+  }
+}

@@ -1,0 +1,201 @@
+/* Toast Notification Container */
+.toaster-container {
+  position: fixed;
+  top: 28px;
+  left: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  z-index: 9999;
+  max-width: 380px;
+  width: calc(100vw - 56px);
+  pointer-events: none; /* Let clicks pass through empty space */
+}
+
+/* Toast Cards - Solid Filled Layout like Shadcn */
+.toast-card {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: 16px 20px;
+  border-radius: var(--radius-lg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  pointer-events: auto; /* Enable hover/clicks on cards */
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 1px solid transparent;
+}
+
+.toast-card:hover {
+  transform: translateY(-3px) scale(1.02);
+}
+
+/* Slide in from left animation for Desktop */
+.anim-slide-in-left {
+  animation: slideInLeft 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes slideInLeft {
+  from {
+    transform: translateX(-120%) scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0) scale(1);
+    opacity: 1;
+  }
+}
+
+/* Toast type color themes (Shadcn-like solid variants) */
+.toast-success {
+  background: rgba(16, 185, 129, 0.96) !important;
+  border-color: rgba(16, 185, 129, 0.3) !important;
+  box-shadow: 0 10px 30px rgba(16, 185, 129, 0.22), 0 0 20px rgba(16, 185, 129, 0.1) !important;
+  --toast-icon-bg: rgba(255, 255, 255, 0.16);
+  --toast-icon-color: #ffffff;
+  --toast-text-color: #ffffff;
+  --toast-close-color: rgba(255, 255, 255, 0.7);
+  --toast-close-hover: #ffffff;
+  --toast-close-hover-bg: rgba(255, 255, 255, 0.15);
+}
+
+.toast-error {
+  background: rgba(239, 68, 68, 0.96) !important;
+  border-color: rgba(239, 68, 68, 0.3) !important;
+  box-shadow: 0 10px 30px rgba(239, 68, 68, 0.22), 0 0 20px rgba(239, 68, 68, 0.1) !important;
+  --toast-icon-bg: rgba(255, 255, 255, 0.16);
+  --toast-icon-color: #ffffff;
+  --toast-text-color: #ffffff;
+  --toast-close-color: rgba(255, 255, 255, 0.7);
+  --toast-close-hover: #ffffff;
+  --toast-close-hover-bg: rgba(255, 255, 255, 0.15);
+}
+
+.toast-warning {
+  background: rgba(217, 119, 6, 0.96) !important; /* Solid Amber */
+  border-color: rgba(217, 119, 6, 0.3) !important;
+  box-shadow: 0 10px 30px rgba(217, 119, 6, 0.22), 0 0 20px rgba(217, 119, 6, 0.1) !important;
+  --toast-icon-bg: rgba(255, 255, 255, 0.16);
+  --toast-icon-color: #ffffff;
+  --toast-text-color: #ffffff;
+  --toast-close-color: rgba(255, 255, 255, 0.7);
+  --toast-close-hover: #ffffff;
+  --toast-close-hover-bg: rgba(255, 255, 255, 0.15);
+}
+
+.toast-info {
+  background: rgba(217, 119, 6, 0.96) !important; /* Spiced Gold */
+  border-color: rgba(217, 119, 6, 0.3) !important;
+  box-shadow: 0 10px 30px rgba(217, 119, 6, 0.22), 0 0 20px rgba(217, 119, 6, 0.1) !important;
+  --toast-icon-bg: rgba(255, 255, 255, 0.16);
+  --toast-icon-color: #ffffff;
+  --toast-text-color: #ffffff;
+  --toast-close-color: rgba(255, 255, 255, 0.7);
+  --toast-close-hover: #ffffff;
+  --toast-close-hover-bg: rgba(255, 255, 255, 0.15);
+}
+
+.toast-cart {
+  background: rgba(249, 115, 22, 0.96) !important; /* Spiced Orange */
+  border-color: rgba(249, 115, 22, 0.3) !important;
+  box-shadow: 0 10px 30px rgba(249, 115, 22, 0.22), 0 0 20px rgba(249, 115, 22, 0.1) !important;
+  --toast-icon-bg: rgba(255, 255, 255, 0.16);
+  --toast-icon-color: #ffffff;
+  --toast-text-color: #ffffff;
+  --toast-close-color: rgba(255, 255, 255, 0.7);
+  --toast-close-hover: #ffffff;
+  --toast-close-hover-bg: rgba(255, 255, 255, 0.15);
+}
+
+.toast-cart-remove {
+  background: rgba(225, 29, 72, 0.96) !important; /* Premium Rose Red */
+  border-color: rgba(225, 29, 72, 0.3) !important;
+  box-shadow: 0 10px 30px rgba(225, 29, 72, 0.22), 0 0 20px rgba(225, 29, 72, 0.1) !important;
+  --toast-icon-bg: rgba(255, 255, 255, 0.16);
+  --toast-icon-color: #ffffff;
+  --toast-text-color: #ffffff;
+  --toast-close-color: rgba(255, 255, 255, 0.7);
+  --toast-close-hover: #ffffff;
+  --toast-close-hover-bg: rgba(255, 255, 255, 0.15);
+}
+
+/* Icon Wrapper */
+.toast-icon-wrapper {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--toast-icon-bg);
+  color: var(--toast-icon-color);
+  transition: all 0.25s ease;
+}
+
+.toast-icon-wrapper svg {
+  width: 1.25rem;
+  height: 1.25rem;
+  color: var(--toast-icon-color) !important;
+}
+
+/* Message */
+.toast-message {
+  font-size: var(--font-size-sm);
+  color: var(--toast-text-color);
+  font-weight: var(--weight-semibold);
+  margin: 0;
+  line-height: var(--lh-snug);
+  text-align: left;
+}
+
+/* Close button */
+.toast-close-btn {
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  color: var(--toast-close-color);
+  cursor: pointer;
+  padding: 6px;
+  border-radius: var(--radius-sm);
+  transition: all var(--transition-fast);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.toast-close-btn:hover {
+  color: var(--toast-close-hover);
+  background: var(--toast-close-hover-bg);
+}
+
+/* Responsive Position adjustments */
+@media (max-width: 576px) {
+  .toaster-container {
+    top: auto;
+    bottom: 24px;
+    right: 24px;
+    left: 24px;
+    width: auto;
+    max-width: none;
+    gap: 10px;
+  }
+
+  .toast-card {
+    padding: 14px 16px;
+    animation: slideUpBottom 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  @keyframes slideUpBottom {
+    from {
+      transform: translateY(120%) scale(0.95);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0) scale(1);
+      opacity: 1;
+    }
+  }
+}

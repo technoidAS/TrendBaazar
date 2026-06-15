@@ -1,0 +1,360 @@
+/* Product details page styles for TrendBaazar */
+.product-details-page {
+  padding-top: var(--space-lg);
+  padding-bottom: var(--space-3xl);
+  width: 100%;
+}
+
+.back-navigation-btn {
+  font-size: var(--font-size-sm);
+  color: var(--text-muted);
+  margin-bottom: var(--space-lg);
+  transition: color var(--transition-fast);
+}
+
+.back-navigation-btn:hover {
+  color: var(--primary);
+}
+
+.product-error-container {
+  min-height: 400px;
+}
+
+/* Detail Split Grid */
+.details-layout-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-2xl);
+  align-items: flex-start;
+}
+
+@media (min-width: 992px) {
+  .details-layout-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-2xl);
+  }
+}
+
+/* Left side images column */
+.details-images-col {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  width: 100%;
+}
+
+.main-image-wrapper {
+  width: 100%;
+  height: 350px;
+  overflow: hidden;
+  border-radius: var(--radius-xl);
+}
+
+@media (min-width: 768px) {
+  .main-image-wrapper {
+    height: 480px;
+  }
+}
+
+.details-main-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.thumbnails-wrapper {
+  display: flex;
+  gap: var(--space-sm);
+  flex-wrap: wrap;
+}
+
+.thumbnail-btn {
+  width: 80px;
+  height: 80px;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  border: 1px solid var(--border-primary);
+  padding: 0;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.thumbnail-btn:hover {
+  border-color: var(--primary);
+}
+
+.thumbnail-active {
+  border-color: var(--primary);
+}
+
+.thumbnail-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Right side details info column */
+.details-info-col {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.details-category-tag {
+  font-size: var(--font-size-xs);
+  font-weight: var(--weight-bold);
+  text-transform: uppercase;
+  color: var(--secondary);
+  letter-spacing: 0.05em;
+}
+
+.details-title {
+  font-family: var(--font-display);
+  font-size: var(--font-size-3xl);
+  font-weight: var(--weight-extrabold);
+}
+
+.details-rating-wrapper {
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+}
+
+.details-price {
+  font-family: var(--font-display);
+  font-size: var(--font-size-3xl);
+  font-weight: var(--weight-bold);
+  color: var(--text-primary);
+}
+
+.details-description {
+  font-size: var(--font-size-md);
+  color: var(--text-secondary);
+  line-height: var(--lh-relaxed);
+}
+
+.details-divider {
+  border: none;
+  border-top: 1px solid var(--border-primary);
+  width: 100%;
+  margin: var(--space-xs) 0;
+}
+
+/* Options selectors (Color & Size) */
+.options-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.options-title {
+  font-family: var(--font-display);
+  font-size: var(--font-size-sm);
+  font-weight: var(--weight-bold);
+  color: var(--text-primary);
+}
+
+.option-active-val {
+  color: var(--secondary);
+}
+
+.colors-palette {
+  display: flex;
+  gap: var(--space-xs);
+}
+
+.color-selector-btn {
+  width: 30px;
+  height: 30px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border-primary);
+  padding: 2px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+}
+
+.color-dot {
+  width: 100%;
+  height: 100%;
+  border-radius: var(--radius-full);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.color-selector-btn:hover {
+  transform: scale(1.1);
+}
+
+.color-active {
+  border-color: var(--primary);
+}
+
+.sizes-grid {
+  display: flex;
+  gap: var(--space-sm);
+  flex-wrap: wrap;
+}
+
+.size-selector-btn {
+  min-width: 44px;
+  height: 44px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-primary);
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  font-family: var(--font-display);
+  font-size: var(--font-size-sm);
+  font-weight: var(--weight-semibold);
+  transition: all var(--transition-normal);
+  padding: 0 var(--space-xs);
+}
+
+.size-selector-btn:hover {
+  border-color: var(--primary);
+}
+
+.size-active {
+  background: var(--gradient-brand);
+  color: #fff;
+  border-color: transparent;
+}
+
+/* Quantity counter plus Add actions */
+.actions-section {
+  flex-wrap: wrap;
+  margin-top: var(--space-sm);
+}
+
+.quantity-counter {
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-md);
+  height: 48px;
+  background: var(--bg-tertiary);
+}
+
+.qty-btn {
+  width: 40px;
+  height: 100%;
+  font-size: var(--font-size-lg);
+  font-weight: var(--weight-bold);
+  color: var(--text-secondary);
+  transition: color var(--transition-fast);
+}
+
+.qty-btn:hover {
+  color: var(--primary);
+}
+
+.qty-value {
+  width: 32px;
+  text-align: center;
+  font-family: var(--font-display);
+  font-weight: var(--weight-bold);
+  font-size: var(--font-size-md);
+}
+
+.details-add-cart-btn {
+  height: 48px;
+  flex: 1;
+  min-width: 200px;
+}
+
+.details-wishlist-btn {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border-primary);
+  color: var(--text-muted);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+}
+
+.details-wishlist-btn:hover {
+  color: #fbbf24;
+  border-color: rgba(251, 191, 36, 0.2);
+  background: rgba(251, 191, 36, 0.05);
+}
+
+.details-wishlist-btn.wishlist-active {
+  color: #fbbf24;
+  fill: #fbbf24;
+  border-color: rgba(251, 191, 36, 0.25);
+}
+
+/* Specifications list */
+.details-specs-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.details-specs-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.details-specs-list li {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+}
+
+.spec-bullet-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: var(--radius-full);
+  background-color: var(--primary);
+  flex-shrink: 0;
+}
+
+/* Assurances panel HUD */
+.assurances-hud-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-md);
+  margin-top: var(--space-md);
+  background: rgba(255, 255, 255, 0.01);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+}
+
+@media (min-width: 576px) {
+  .assurances-hud-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.assurance-hud-item {
+  text-align: left;
+}
+
+.assurance-hud-title {
+  display: block;
+  font-family: var(--font-display);
+  font-weight: var(--weight-bold);
+  font-size: var(--font-size-xs);
+  color: var(--text-primary);
+}
+
+.assurance-hud-desc {
+  display: block;
+  font-size: 10px;
+  color: var(--text-muted);
+}
+
+/* Related section */
+.details-related-section {
+  margin-top: var(--space-3xl);
+  border-top: 1px solid var(--border-primary);
+  padding-top: var(--space-2xl);
+}
+
+.related-title {
+  font-family: var(--font-display);
+  font-size: var(--font-size-2xl);
+  font-weight: var(--weight-bold);
+  margin-bottom: var(--space-lg);
+}

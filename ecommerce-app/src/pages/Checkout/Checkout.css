@@ -1,0 +1,225 @@
+/* Checkout page styles for TrendBaazar */
+.checkout-page-container {
+  padding-top: var(--space-xl);
+  padding-bottom: var(--space-3xl);
+  width: 100%;
+}
+
+.checkout-page-title {
+  font-family: var(--font-display);
+  font-size: var(--font-size-2xl);
+  font-weight: var(--weight-extrabold);
+  margin-bottom: var(--space-lg);
+}
+
+.checkout-empty {
+  min-height: 400px;
+}
+
+/* Steps Indicators HUD */
+.checkout-hud-steps {
+  margin-bottom: var(--space-2xl);
+}
+
+.hud-step {
+  color: var(--text-muted);
+}
+
+.hud-step-num {
+  width: 24px;
+  height: 24px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border-primary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-xs);
+  font-weight: var(--weight-bold);
+  font-family: var(--font-display);
+}
+
+.hud-step-label {
+  font-family: var(--font-display);
+  font-size: var(--font-size-sm);
+  font-weight: var(--weight-semibold);
+}
+
+@media (max-width: 576px) {
+  .hud-step-label {
+    display: none; /* Hide text labels on mobile for clean fit */
+  }
+}
+
+.hud-step-active {
+  color: var(--primary);
+}
+
+.hud-step-active .hud-step-num {
+  border-color: var(--primary);
+  background: rgba(168, 85, 247, 0.1);
+}
+
+/* Layout Grid */
+.checkout-layout-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-xl);
+  align-items: flex-start;
+}
+
+@media (min-width: 992px) {
+  .checkout-layout-grid {
+    grid-template-columns: 1fr 380px;
+    gap: var(--space-2xl);
+  }
+}
+
+/* Form column steps card */
+.checkout-form-col {
+  width: 100%;
+}
+
+.step-card {
+  padding: var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  text-align: left;
+}
+
+.step-card-header {
+  text-align: left;
+}
+
+.step-card-title {
+  font-family: var(--font-display);
+  font-size: var(--font-size-lg);
+  font-weight: var(--weight-bold);
+}
+
+.step-divider {
+  border: none;
+  border-top: 1px solid var(--border-primary);
+  margin: 0;
+  width: 100%;
+}
+
+.checkout-fields-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  width: 100%;
+}
+
+.step-actions {
+  margin-top: var(--space-sm);
+  border-top: 1px solid var(--border-primary);
+  padding-top: var(--space-md);
+}
+
+/* Success Card details */
+.checkout-success-card {
+  align-items: center;
+  justify-content: center;
+}
+
+.checkout-success-card svg {
+  margin-bottom: var(--space-sm);
+  align-self: center;
+}
+
+.success-main-title {
+  font-family: var(--font-display);
+  font-size: var(--font-size-2xl);
+  font-weight: var(--weight-extrabold);
+}
+
+.success-subtitle {
+  font-size: var(--font-size-sm);
+  line-height: var(--lh-normal);
+  max-width: 420px;
+  margin: 0 auto;
+}
+
+.success-order-details {
+  max-width: 420px;
+  width: 100%;
+  margin: var(--space-lg) auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  padding: var(--space-md) !important;
+}
+
+/* Right Summary Review Column */
+.checkout-summary-col {
+  width: 100%;
+}
+
+.checkout-summary-card {
+  padding: var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.checkout-items-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  max-height: 240px;
+  overflow-y: auto;
+}
+
+.checkout-item {
+  width: 100%;
+}
+
+.checkout-item-img {
+  width: 48px;
+  height: 48px;
+  object-fit: cover;
+  border-radius: var(--radius-sm);
+}
+
+.checkout-item-name {
+  font-family: var(--font-body);
+  font-size: var(--font-size-sm);
+  font-weight: var(--weight-bold);
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.checkout-item-subtext {
+  font-size: var(--font-size-xs);
+  color: var(--text-muted);
+}
+
+.checkout-item-price {
+  font-family: var(--font-display);
+  font-size: var(--font-size-sm);
+  font-weight: var(--weight-bold);
+  color: var(--text-primary);
+}
+
+/* Multiple addresses checkout styles */
+.addresses-list-grid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  width: 100%;
+}
+
+.address-radio-card {
+  transition: all var(--transition-fast) !important;
+  user-select: none;
+}
+
+.address-radio-card:hover {
+  border-color: rgba(168, 85, 247, 0.4) !important;
+}
+
+.address-radio-card.active-address-card {
+}

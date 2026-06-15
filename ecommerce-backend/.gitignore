@@ -1,0 +1,35 @@
+# Build output
+bin/
+obj/
+TestResults/
+coverage/
+
+# Logs and runtime files
+*.log
+logs/
+*.pid
+*.pid.lock
+
+# Visual Studio / IDE local state
+.vs/
+*.user
+*.userosscache
+*.suo
+*.rsuser
+*.csproj.user
+
+# Local secrets and environment overrides
+.env
+.env.*
+appsettings.*.local.json
+appsettings.*.Secrets.json
+appsettings.Development.json
+secrets.json
+
+# Common local database files
+*.db
+*.db-shm
+*.db-wal
+*.mdf
+*.ldf
+

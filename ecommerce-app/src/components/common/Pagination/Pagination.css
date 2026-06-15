@@ -1,0 +1,53 @@
+/* Pagination Stylesheet for TrendBaazar */
+.pagination-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-xs);
+  padding: var(--space-lg) 0;
+  width: 100%;
+}
+
+.pagination-pages {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2xs);
+}
+
+.pagination-btn {
+  width: 40px;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-primary);
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+  font-family: var(--font-display);
+  font-size: var(--font-size-md);
+  font-weight: var(--weight-medium);
+  transition: all var(--transition-normal);
+}
+
+.pagination-btn:hover:not(:disabled) {
+  border-color: var(--primary);
+  color: var(--text-primary);
+  background: rgba(168, 85, 247, 0.05);
+}
+
+.pagination-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.pagination-active {
+  background: var(--gradient-brand);
+  color: #fff !important;
+  border-color: transparent;
+  box-shadow: var(--shadow-glow);
+}
+
+.pagination-arrow {
+  padding: 0;
+}

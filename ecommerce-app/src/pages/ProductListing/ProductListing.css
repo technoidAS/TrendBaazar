@@ -1,0 +1,119 @@
+/* Product Listing page styles for TrendBaazar */
+.shop-page-container {
+  padding-top: var(--space-xl);
+  padding-bottom: var(--space-3xl);
+  width: 100%;
+}
+
+.shop-header-hud {
+  margin-bottom: var(--space-xl);
+}
+
+.shop-title {
+  font-family: var(--font-display);
+  font-size: var(--font-size-2xl);
+  font-weight: var(--weight-extrabold);
+}
+
+.shop-subtitle {
+  font-size: var(--font-size-sm);
+  color: var(--text-muted);
+}
+
+.mobile-filter-toggle-btn {
+  display: inline-flex;
+}
+
+@media (min-width: 992px) {
+  .mobile-filter-toggle-btn {
+    display: none !important; /* Hide sidebar toggle on desktop */
+  }
+}
+
+/* Shop Layout grid */
+.shop-layout-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-xl);
+  align-items: flex-start;
+}
+
+@media (min-width: 992px) {
+  .shop-layout-grid {
+    grid-template-columns: 260px 1fr;
+  }
+}
+
+.shop-products-wrapper {
+  width: 100%;
+}
+
+.shop-empty-state {
+  min-height: 300px;
+  text-align: center;
+  gap: var(--space-sm);
+}
+
+.shop-empty-state h3 {
+  font-family: var(--font-display);
+  font-size: var(--font-size-xl);
+  font-weight: var(--weight-bold);
+  color: var(--text-primary);
+}
+
+.shop-empty-state p {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  max-width: 380px;
+}
+
+/* Mobile Sidebar Drawer Overlay styles */
+@media (max-width: 991px) {
+  .shop-sidebar-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: var(--z-sidebar);
+    visibility: hidden;
+    transition: visibility var(--transition-normal);
+  }
+
+  .mobile-sidebar-active {
+    visibility: visible;
+  }
+
+  .mobile-sidebar-backdrop {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    opacity: 0;
+    transition: opacity var(--transition-normal);
+  }
+
+  .mobile-sidebar-active .mobile-sidebar-backdrop {
+    opacity: 1;
+  }
+
+  .sidebar-positioner {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 80%;
+    max-width: 320px;
+    height: 100%;
+    background: var(--bg-secondary);
+    border-right: 1px solid var(--border-primary);
+    transform: translateX(-100%);
+    transition: transform var(--transition-spring);
+    padding: var(--space-lg);
+    overflow-y: auto;
+  }
+
+  .mobile-sidebar-active .sidebar-positioner {
+    transform: translateX(0);
+  }
+}

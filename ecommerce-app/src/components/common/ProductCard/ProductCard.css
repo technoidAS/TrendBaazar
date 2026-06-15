@@ -1,0 +1,220 @@
+/* 3D Product Card Styles for TrendBaazar */
+
+/* 3D Perspective container wrapper */
+.product-card-3d-container {
+  perspective: 1000px;
+  width: 100%;
+}
+
+.product-card-3d {
+  transform-style: preserve-3d;
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  transition: border-color var(--transition-normal);
+  will-change: transform;
+}
+
+/* Elevate border glow when hovered */
+.product-card-3d.card-hovered {
+  border-color: rgba(249, 115, 22, 0.25);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2), 0 0 20px rgba(0, 0, 0, 0.15);
+}
+
+/* 3D Image Layer - floats highest off card */
+.product-card-image-3d {
+  position: relative;
+  width: 100%;
+  height: 240px;
+  overflow: visible; /* Allow image to overflow container slightly if desired, or clip */
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transform-style: preserve-3d;
+  transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+  background-color: var(--bg-tertiary);
+}
+
+.product-image-layer {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: var(--radius-md);
+  transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.product-image-overlay-3d {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(10, 11, 16, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  border-radius: var(--radius-md);
+  transition: opacity var(--transition-fast);
+}
+
+.product-card-image-3d:hover .product-image-overlay-3d {
+  opacity: 1;
+}
+
+.view-product-text-3d {
+  font-family: var(--font-display);
+  font-weight: var(--weight-bold);
+  font-size: var(--font-size-sm);
+  color: #fff;
+  background: var(--glass-bg);
+  backdrop-filter: blur(8px);
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--glass-border);
+}
+
+/* Layer details metadata */
+.product-card-details-3d {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  transform-style: preserve-3d;
+}
+
+.product-meta-row-3d {
+  transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+  transform-style: preserve-3d;
+}
+
+.product-category-3d {
+  font-size: 10px;
+  font-weight: var(--weight-bold);
+  text-transform: uppercase;
+  color: var(--text-muted);
+  letter-spacing: 0.05em;
+  display: inline-block;
+}
+
+.product-rating-3d {
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+  font-weight: var(--weight-semibold);
+}
+
+.product-title-3d {
+  font-family: var(--font-display);
+  font-size: var(--font-size-md);
+  font-weight: var(--weight-bold);
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: color var(--transition-fast), transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+  transform-style: preserve-3d;
+  line-height: var(--lh-tight);
+  text-align: left;
+  /* Truncate lines */
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.product-title-3d:hover {
+  color: var(--primary);
+}
+
+.product-footer-3d {
+  margin-top: var(--space-xs);
+  border-top: 1px solid rgba(255, 255, 255, 0.03);
+  padding-top: var(--space-sm);
+  transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+  transform-style: preserve-3d;
+}
+
+.product-price-3d {
+  font-family: var(--font-display);
+  font-size: var(--font-size-md);
+  font-weight: var(--weight-bold);
+  color: var(--text-primary);
+}
+
+/* Action items buttons */
+.product-actions-3d {
+  transform-style: preserve-3d;
+}
+
+.action-btn-3d {
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-full);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+  border: 1px solid var(--border-primary);
+}
+
+.wishlist-btn-3d {
+  color: var(--text-muted);
+  background: transparent;
+}
+
+.wishlist-btn-3d:hover {
+  color: #fbbf24;
+  background: rgba(251, 191, 36, 0.08);
+}
+
+.wishlist-btn-3d.wishlist-active {
+  color: #fbbf24 !important;
+  fill: #fbbf24;
+  border-color: rgba(251, 191, 36, 0.25);
+}
+
+.cart-btn-3d {
+  background: var(--bg-tertiary);
+  color: var(--text-secondary);
+}
+
+.cart-btn-3d:hover {
+  background: var(--gradient-brand);
+  color: #fff;
+  border-color: transparent;
+  transform: scale(1.05);
+}
+
+.cart-btn-3d.cart-active {
+  background: var(--gradient-cyan);
+  color: #0b0c10;
+  border-color: transparent;
+}
+
+.cart-btn-3d.cart-active:hover {
+  background: var(--gradient-brand);
+  color: #fff;
+}
+
+/* 3D Shift values applied during active hover hover-state */
+.product-card-3d.card-hovered .product-card-image-3d {
+  transform: translateZ(50px);
+}
+
+.product-card-3d.card-hovered .product-image-layer {
+  transform: scale(1.06);
+}
+
+.product-card-3d.card-hovered .product-meta-row-3d {
+  transform: translateZ(20px);
+}
+
+.product-card-3d.card-hovered .product-title-3d {
+  transform: translateZ(35px);
+}
+
+.product-card-3d.card-hovered .product-footer-3d {
+  transform: translateZ(25px);
+}
