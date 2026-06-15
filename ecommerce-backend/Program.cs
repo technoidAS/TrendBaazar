@@ -19,15 +19,12 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddSingleton<OtpService>();
 builder.Services.AddScoped<TokenService>();
 
-// 3. Add CORS Policies — Allow only the deployed frontend and local development frontend
+// 3. Add CORS Policies — Allow requests from any origin
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowClientDev", policy =>
     {
-        policy.WithOrigins(
-                  "https://trend-baazar.vercel.app",
-                  "http://localhost:5173",
-                  "http://127.0.0.1:5173")
+        policy.AllowAnyOrigin()
               .AllowAnyHeader()
               .AllowAnyMethod();
     });
