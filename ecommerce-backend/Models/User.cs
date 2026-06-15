@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace ecommerce_backend.Models;
 
@@ -19,5 +20,6 @@ public class User
 
     // Relationships
     public List<AddressBook> Addresses { get; set; } = new();
+    [JsonIgnore]
     public List<Order> Orders { get; set; } = new();
 }

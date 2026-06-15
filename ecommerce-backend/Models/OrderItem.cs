@@ -1,4 +1,5 @@
 using System;
+using System.Text.Json.Serialization;
 
 namespace ecommerce_backend.Models;
 
@@ -18,5 +19,6 @@ public class OrderItem
     public string SelectedSize { get; set; } = "";
 
     // Navigation
+    [JsonIgnore]
     public Order Order { get; set; } = null!;
 }

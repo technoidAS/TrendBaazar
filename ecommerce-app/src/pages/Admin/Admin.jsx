@@ -5,6 +5,7 @@ import { useAuth } from '../../context/AuthContext/AuthContext';
 import productService from '../../services/productService';
 import orderService from '../../services/orderService';
 import authService from '../../services/authService';
+import dp from '../../services/dp/dpSelector';
 import Button from '../../components/common/Button/Button';
 import Input from '../../components/common/Input/Input';
 import FadeIn from '../../components/animations/FadeIn';
@@ -14,6 +15,7 @@ import './Admin.css';
 
 export function Admin() {
   const { user } = useAuth();
+  const isApiMode = import.meta.env.VITE_DATA_SOURCE === 'api';
 
   if (!user || user.role !== 'admin') {
     return <Navigate to="/profile" replace />;
@@ -25,6 +27,7 @@ export function Admin() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [dashboardStats, setDashboardStats] = useState(null);
   const { addToast } = useToast();
 
   // Form state for adding product
@@ -43,6 +46,13 @@ export function Admin() {
     setLoading(true);
     setError(null);
     try {
+      if (isApiMode && typeof dp.getAdminStats === 'function') {
+        const stats = await dp.getAdminStats();
+        setDashboardStats(stats);
+      } else {
+        setDashboardStats(null);
+      }
+
       const prodsData = await productService.getProducts();
       setProducts(prodsData);
       
@@ -130,10 +140,13 @@ export function Admin() {
   };
 
   // Dashboard Stats Calculations
-  const totalRevenue = orders.reduce((sum, o) => {
+  const totalRevenue = dashboardStats?.totalSales ?? orders.reduce((sum, o) => {
     if (o.status !== 'Cancelled') return sum + o.totals.total;
     return sum;
   }, 0);
+  const ordersCount = dashboardStats?.ordersCount ?? orders.length;
+  const usersCount = dashboardStats?.usersCount ?? users.length;
+  const productsCount = dashboardStats?.productsCount ?? products.length;
 
   if (loading) {
     return (
@@ -172,21 +185,21 @@ export function Admin() {
             <span className="stat-label">Client Orders</span>
             <span className="stat-icon-wrapper purple-glow"><ClipboardList size={20} /></span>
           </div>
-          <h3 className="stat-value">{orders.length} Logged</h3>
+          <h3 className="stat-value">{ordersCount} Logged</h3>
         </div>
         <div className="admin-stat-card glass-panel">
           <div className="flex justify-between align-center">
             <span className="stat-label">Registered Customers</span>
             <span className="stat-icon-wrapper"><Users size={20} /></span>
           </div>
-          <h3 className="stat-value">{users.length} Users</h3>
+          <h3 className="stat-value">{usersCount} Users</h3>
         </div>
         <div className="admin-stat-card glass-panel">
           <div className="flex justify-between align-center">
             <span className="stat-label">Product Listings</span>
             <span className="stat-icon-wrapper"><ShoppingBag size={20} /></span>
           </div>
-          <h3 className="stat-value">{products.length} Items</h3>
+          <h3 className="stat-value">{productsCount} Items</h3>
         </div>
       </div>
 

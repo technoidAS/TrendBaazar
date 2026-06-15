@@ -492,6 +492,26 @@ export const localProvider = {
   },
 
   // --- ADMIN DRIVER ---
+  getAdminStats: async () => {
+    await delay(350);
+    const products = JSON.parse(localStorage.getItem(STORAGE_KEYS.PRODUCTS) || '[]');
+    const users = JSON.parse(localStorage.getItem('trendbaazar_users') || '[]');
+    const orders = JSON.parse(localStorage.getItem(STORAGE_KEYS.ORDERS) || '[]');
+
+    const activeOrders = orders.filter((o) => o.status !== 'Cancelled');
+    const totalSales = activeOrders.reduce((sum, order) => sum + (order.totals?.total || 0), 0);
+
+    return {
+      totalSales,
+      ordersCount: orders.length,
+      usersCount: users.length,
+      productsCount: products.length,
+      categorySales: {},
+      categoryProductCounts: {},
+      latestOrders: orders.slice(0, 10)
+    };
+  },
+
   addProduct: async (productData) => {
     await delay(500);
     const products = JSON.parse(localStorage.getItem(STORAGE_KEYS.PRODUCTS) || '[]');

@@ -1,4 +1,5 @@
 using System;
+using System.Text.Json.Serialization;
 
 namespace ecommerce_backend.Models;
 
@@ -11,5 +12,6 @@ public class AddressBook
     public string Address { get; set; } = null!;
 
     // Navigation Property
+    [JsonIgnore]
     public User User { get; set; } = null!;
 }

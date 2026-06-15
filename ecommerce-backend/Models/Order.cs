@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace ecommerce_backend.Models;
 
@@ -31,6 +32,7 @@ public class Order
     public string Signature { get; set; } = "";
     
     // Navigation
+    [JsonIgnore]
     public User User { get; set; } = null!;
     public List<OrderItem> Items { get; set; } = new();
 }

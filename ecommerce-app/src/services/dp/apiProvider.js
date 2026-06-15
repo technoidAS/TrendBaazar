@@ -124,6 +124,20 @@ export const apiProvider = {
   },
 
   // --- ADMIN DRIVER ---
+  getAdminStats: async () => {
+    const response = await axiosInstance.get(endpoints.ADMIN_STATS);
+    const stats = response.data || {};
+    return {
+      totalSales: stats.totalSales ?? stats.TotalSales ?? 0,
+      ordersCount: stats.ordersCount ?? stats.OrdersCount ?? 0,
+      usersCount: stats.usersCount ?? stats.UsersCount ?? 0,
+      productsCount: stats.productsCount ?? stats.ProductsCount ?? 0,
+      categorySales: stats.categorySales ?? stats.CategorySales ?? {},
+      categoryProductCounts: stats.categoryProductCounts ?? stats.CategoryProductCounts ?? {},
+      latestOrders: (stats.latestOrders ?? stats.LatestOrders ?? []).map(mapApiOrderToFrontend)
+    };
+  },
+
   addProduct: async (productData) => {
     const response = await axiosInstance.post(endpoints.ADMIN_PRODUCTS, productData);
     return response.data;
