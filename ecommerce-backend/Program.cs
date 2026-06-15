@@ -16,15 +16,15 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddSingleton<OtpService>();
 builder.Services.AddScoped<TokenService>();
 
-// 3. Add CORS Policies — Allow ALL origins (any frontend can call this API)
+// 3. Add CORS Policies — Allow only the deployed frontend and local development frontend
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowClientDev", policy =>
     {
-        // AllowAnyOrigin() permits requests from any domain (local, deployed, etc.)
-        // NOTE: AllowCredentials() is not compatible with AllowAnyOrigin() per the CORS spec.
-        // JWT tokens are passed via the Authorization header, so credentials/cookies are not needed.
-        policy.AllowAnyOrigin()
+        policy.WithOrigins(
+                  "https://trend-baazar.vercel.app",
+                  "http://localhost:5173",
+                  "http://127.0.0.1:5173")
               .AllowAnyHeader()
               .AllowAnyMethod();
     });
