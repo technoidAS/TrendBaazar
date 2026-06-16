@@ -23,7 +23,6 @@ public static class DbInitializer
                 Role = "admin",
                 Email = "admin@trendbaazar.com",
                 Avatar = "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=120&auto=format&fit=crop&q=80",
-                Address = "TrendBaazar Admin HQ, New Delhi, 110001",
                 Addresses = new List<AddressBook>
                 {
                     new() { Id = "addr_admin_1", Name = "Admin HQ", Phone = "9999999999", Address = "TrendBaazar Admin HQ, New Delhi, 110001" }
@@ -38,7 +37,6 @@ public static class DbInitializer
                 Role = "customer",
                 Email = "test@trendbaazar.com",
                 Avatar = "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=120&auto=format&fit=crop&q=80",
-                Address = "142 Cyberpunk Ave, Floor 12, Neo City, NC 94012",
                 Addresses = new List<AddressBook>
                 {
                     new() { Id = "addr_1", Name = "Alex Trendsetter (Home)", Phone = "+1 (555) 019-2834", Address = "142 Cyberpunk Ave, Floor 12, Neo City, NC 94012" },
@@ -60,7 +58,7 @@ public static class DbInitializer
             {
                 Id = "prod_1",
                 Name = "Quantum Flux Sneakers",
-                Price = 9999,
+                Price = 9999m,
                 Category = "footwear",
                 Brand = "AeroFlux",
                 Image = "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600&auto=format&fit=crop&q=80",
@@ -79,7 +77,7 @@ public static class DbInitializer
             {
                 Id = "prod_2",
                 Name = "Cyberpunk Techwear Jacket",
-                Price = 14500,
+                Price = 14500m,
                 Category = "apparel",
                 Brand = "NeoTech",
                 Image = "https://images.unsplash.com/photo-1551028719-00167b16eac5?w=600&auto=format&fit=crop&q=80",
@@ -98,7 +96,7 @@ public static class DbInitializer
             {
                 Id = "prod_3",
                 Name = "Aether Noise-Canceling Headphones",
-                Price = 19999,
+                Price = 19999m,
                 Category = "gadgets",
                 Brand = "Aether",
                 Image = "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600&auto=format&fit=crop&q=80",
@@ -117,7 +115,7 @@ public static class DbInitializer
             {
                 Id = "prod_4",
                 Name = "Chronos Kinetic Smartwatch",
-                Price = 15999,
+                Price = 15999m,
                 Category = "gadgets",
                 Brand = "Chronos",
                 Image = "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600&auto=format&fit=crop&q=80",
@@ -136,7 +134,7 @@ public static class DbInitializer
             {
                 Id = "prod_5",
                 Name = "Vaporwave Neon Backpack",
-                Price = 4999,
+                Price = 4999m,
                 Category = "accessories",
                 Brand = "VaporWare",
                 Image = "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=600&auto=format&fit=crop&q=80",
@@ -155,7 +153,7 @@ public static class DbInitializer
             {
                 Id = "prod_6",
                 Name = "Hyperion Leather Boots",
-                Price = 12999,
+                Price = 12999m,
                 Category = "footwear",
                 Brand = "Zenith",
                 Image = "https://images.unsplash.com/photo-1608256246200-53e635b5b65f?w=600&auto=format&fit=crop&q=80",
@@ -174,7 +172,7 @@ public static class DbInitializer
             {
                 Id = "prod_7",
                 Name = "Spectrum RGB Mechanical Keyboard",
-                Price = 8999,
+                Price = 8999m,
                 Category = "gadgets",
                 Brand = "Apex",
                 Image = "https://images.unsplash.com/photo-1618384887929-16ec33fab9ef?w=600&auto=format&fit=crop&q=80",
@@ -193,7 +191,7 @@ public static class DbInitializer
             {
                 Id = "prod_8",
                 Name = "Nebula Oversized Hoodie",
-                Price = 5999,
+                Price = 5999m,
                 Category = "apparel",
                 Brand = "VaporWare",
                 Image = "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?w=600&auto=format&fit=crop&q=80",
@@ -241,12 +239,38 @@ public static class DbInitializer
                 var target = categoryTargets[category];
                 var needed = target - currentCount;
 
+                // Category-appropriate color options
+                var colorsByCategory = new Dictionary<string, List<string[]>>
+                {
+                    { "apparel", new List<string[]> {
+                        new[] { "Carbon Black", "Ghost Gray" },
+                        new[] { "Neon Matte Black", "Hyper White" },
+                        new[] { "Galaxy Teal", "Midnight Black" },
+                        new[] { "Supernova Pink", "Alabaster White" }
+                    }},
+                    { "footwear", new List<string[]> {
+                        new[] { "Electric Purple", "Carbon Black" },
+                        new[] { "Hyper White", "Midnight Black" },
+                        new[] { "Cyber Yellow", "Ghost Gray" }
+                    }},
+                    { "gadgets", new List<string[]> {
+                        new[] { "Midnight Ash", "Liquid Platinum" },
+                        new[] { "Carbon Black", "Neon Teal" },
+                        new[] { "Stealth Obsidian", "Frosted Ice" }
+                    }},
+                    { "accessories", new List<string[]> {
+                        new[] { "Carbon Black", "Sunset Copper" },
+                        new[] { "Galaxy Teal", "Ghost Gray" },
+                        new[] { "Midnight Black", "Cyber Yellow" }
+                    }}
+                };
+
                 for (int i = 0; i < needed; i++)
                 {
                     var name = mockNames[category][i];
                     var image = mockImages[category][i];
                     var brand = brands[i % brands.Length];
-                    var price = Math.Round((double)(1500 + (i * 1100) % 18000) / 100) * 100 + 99;
+                    var price = (decimal)(Math.Round((double)(1500 + (i * 1100) % 18000) / 100) * 100 + 99);
 
                     var ratingOptions = new[] { 4.1, 4.2, 4.3, 4.4, 4.5, 4.6, 4.7, 4.8, 4.9 };
                     var rating = ratingOptions[(i + category.Length) % ratingOptions.Length];
@@ -255,6 +279,9 @@ public static class DbInitializer
                     var sizes = category == "apparel"
                         ? new List<string> { "S", "M", "L", "XL" }
                         : (category == "footwear" ? new List<string> { "8", "9", "10", "11" } : new List<string> { "Standard" });
+
+                    var colorList = colorsByCategory[category];
+                    var colors = colorList[i % colorList.Count].ToList();
 
                     products.Add(new Product
                     {
@@ -268,9 +295,9 @@ public static class DbInitializer
                         Rating = rating,
                         ReviewCount = reviewCount,
                         Description = $"Premium grade {name} engineered with high-tech materials. Made by {brand}.",
-                        Features = new List<string> { "High durability tactical construction", "Advanced ergonomic premium finish" },
+                        Features = new List<string>(),
                         Sizes = sizes,
-                        Colors = new List<string> { "Carbon Black", "Neon Teal" },
+                        Colors = colors,
                         Stock = 5 + (i * 7) % 25,
                         Featured = false
                     });

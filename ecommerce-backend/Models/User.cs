@@ -12,14 +12,18 @@ public class User
     public string Email { get; set; } = "";
     public string Avatar { get; set; } = "";
     public string Role { get; set; } = "customer"; // "customer" | "admin"
-    public string Address { get; set; } = "";
 
     // Persisted cart — stored as JSON string in DB column
     // Allows cart to survive logout, device switches, browser clears
     public string CartJson { get; set; } = "[]";
 
+    // Audit timestamp
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
     // Relationships
     public List<AddressBook> Addresses { get; set; } = new();
     [JsonIgnore]
     public List<Order> Orders { get; set; } = new();
+    [JsonIgnore]
+    public List<ProductReview> Reviews { get; set; } = new();
 }

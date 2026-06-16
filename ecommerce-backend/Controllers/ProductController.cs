@@ -62,14 +62,14 @@ public class ProductController : ControllerBase
             query = query.Where(p => p.Rating >= minRating.Value);
         }
 
-        // 5. Price Filters
+        // 5. Price Filters — use decimal to match Product.Price decimal column
         if (minPrice.HasValue)
         {
-            query = query.Where(p => p.Price >= minPrice.Value);
+            query = query.Where(p => p.Price >= (decimal)minPrice.Value);
         }
         if (maxPrice.HasValue)
         {
-            query = query.Where(p => p.Price <= maxPrice.Value);
+            query = query.Where(p => p.Price <= (decimal)maxPrice.Value);
         }
 
         // 6. Sorting

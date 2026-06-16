@@ -28,7 +28,7 @@ public class AdminController : ControllerBase
     public async Task<IActionResult> GetDashboardStats()
     {
         var activeOrders = await _context.Orders
-            .Where(o => o.Status != "Cancelled")
+            .Where(o => o.Status != OrderStatus.Cancelled)
             .ToListAsync();
 
         var totalSales = activeOrders.Sum(o => o.Total);
@@ -39,7 +39,7 @@ public class AdminController : ControllerBase
         // Revenue & Count by category
         var orderItems = await _context.OrderItems
             .Include(oi => oi.Order)
-            .Where(oi => oi.Order.Status != "Cancelled")
+            .Where(oi => oi.Order.Status != OrderStatus.Cancelled)
             .ToListAsync();
 
         var categorySales = orderItems
@@ -108,17 +108,12 @@ public class AdminController : ControllerBase
             return NotFound(new { message = $"Order with ID '{id}' was not found." });
         }
 
-        var validStatuses = new[] { "Processing", "Shipped", "Delivered", "Cancelled" };
-        if (!validStatuses.Contains(request.Status))
-        {
-            return BadRequest(new { message = $"Invalid status. Must be one of: {string.Join(", ", validStatuses)}" });
-        }
-
+        // OrderStatus is an enum — model binding already validates it; no manual string check needed
         order.Status = request.Status;
         _context.Orders.Update(order);
         await _context.SaveChangesAsync();
 
-        return Ok(new { message = $"Order status updated to '{request.Status}' successfully.", orderId = order.Id, status = order.Status });
+        return Ok(new { message = $"Order status updated to '{request.Status}' successfully.", orderId = order.Id, status = order.Status.ToString() });
     }
 
     [HttpGet("users")]
@@ -137,7 +132,6 @@ public class AdminController : ControllerBase
             Email = u.Email,
             Avatar = u.Avatar,
             Role = u.Role,
-            Address = u.Address,
             Addresses = u.Addresses.Select(a => new AddressDto
             {
                 Id = a.Id,
@@ -209,6 +203,7 @@ public class AdminController : ControllerBase
         product.Colors = productInput.Colors;
         product.Stock = productInput.Stock;
         product.Featured = productInput.Featured;
+        product.UpdatedAt = DateTime.UtcNow;
 
         _context.Products.Update(product);
         await _context.SaveChangesAsync();

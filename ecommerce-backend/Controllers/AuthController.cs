@@ -90,7 +90,6 @@ public class AuthController : ControllerBase
             Email = user.Email,
             Avatar = user.Avatar,
             Role = user.Role,
-            Address = user.Address,
             Addresses = user.Addresses.Select(a => new AddressDto
             {
                 Id = a.Id,
@@ -134,7 +133,6 @@ public class AuthController : ControllerBase
             Email = user.Email,
             Avatar = user.Avatar,
             Role = user.Role,
-            Address = user.Address,
             Addresses = user.Addresses.Select(a => new AddressDto
             {
                 Id = a.Id,

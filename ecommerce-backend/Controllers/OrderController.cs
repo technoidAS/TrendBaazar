@@ -52,7 +52,7 @@ public class OrderController : ControllerBase
             {
                 UserId = userId,
                 OrderDate = DateTime.UtcNow,
-                Status = "Processing",
+                Status = OrderStatus.Processing,
                 ShippingName = request.ShippingName,
                 ShippingPhone = request.ShippingPhone,
                 ShippingAddress = request.ShippingAddress,
@@ -168,7 +168,7 @@ public class OrderController : ControllerBase
             Id = order.Id,
             UserId = order.UserId,
             OrderDate = order.OrderDate,
-            Status = order.Status,
+            Status = order.Status.ToString(),  // Serialize enum as readable string for frontend
             ShippingName = order.ShippingName,
             ShippingPhone = order.ShippingPhone,
             ShippingAddress = order.ShippingAddress,

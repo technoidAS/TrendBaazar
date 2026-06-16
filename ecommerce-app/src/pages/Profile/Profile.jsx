@@ -38,7 +38,7 @@ export function Profile() {
   const [isEditing, setIsEditing] = useState(false);
   const [name, setName] = useState(user?.name || '');
   const [phone, setPhone] = useState(user?.phone || '');
-  const [address, setAddress] = useState(user?.address || '');
+  const [address, setAddress] = useState(user?.addresses?.[0]?.address || '');
   const [avatar, setAvatar] = useState(user?.avatar || '');
   const [email, setEmail] = useState(user?.email || '');
   const [updating, setUpdating] = useState(false);
@@ -71,7 +71,23 @@ export function Profile() {
     setUpdating(true);
     setSuccessMsg('');
     try {
-      await updateProfile({ name, address, avatar, email });
+      const updatedAddresses = [...(user.addresses || [])];
+      if (updatedAddresses.length > 0) {
+        updatedAddresses[0] = {
+          ...updatedAddresses[0],
+          address,
+          name: name || user.name,
+          phone: phone || user.phone
+        };
+      } else {
+        updatedAddresses.push({
+          id: 'addr_' + Date.now(),
+          name: name || user.name,
+          phone: phone || user.phone,
+          address
+        });
+      }
+      await updateProfile({ name, avatar, email, addresses: updatedAddresses });
       setIsEditing(false);
       addToast('Profile details updated successfully!', 'success');
     } catch (err) {
@@ -194,7 +210,7 @@ export function Profile() {
                   <MapPin size={18} className="text-muted" />
                   <div>
                     <span className="info-label">Default Shipping Address</span>
-                    <span className="info-val">{user.address || 'Not provided'}</span>
+                    <span className="info-val">{user.addresses?.[0]?.address || 'Not provided'}</span>
                   </div>
                 </div>
 

@@ -357,7 +357,7 @@ export function Admin() {
                     </td>
                     <td>{u.email}</td>
                     <td>{u.phone || 'N/A'}</td>
-                    <td><span style={{ fontSize: '12px' }}>{u.address || 'N/A'}</span></td>
+                    <td><span style={{ fontSize: '12px' }}>{u.addresses?.[0]?.address || 'N/A'}</span></td>
                   </tr>
                 ))}
               </tbody>

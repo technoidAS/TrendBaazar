@@ -40,7 +40,6 @@ public class ProfileController : ControllerBase
         if (!string.IsNullOrEmpty(request.Name)) user.Name = request.Name;
         if (!string.IsNullOrEmpty(request.Email)) user.Email = request.Email;
         if (!string.IsNullOrEmpty(request.Avatar)) user.Avatar = request.Avatar;
-        if (!string.IsNullOrEmpty(request.Address)) user.Address = request.Address;
 
         // If client passes address list inside profile updates (like Checkout.jsx does), sync them
         if (request.Addresses != null)
@@ -78,7 +77,6 @@ public class ProfileController : ControllerBase
             Email = user.Email,
             Avatar = user.Avatar,
             Role = user.Role,
-            Address = user.Address,
             Addresses = updatedAddresses.Select(a => new AddressDto
             {
                 Id = a.Id,

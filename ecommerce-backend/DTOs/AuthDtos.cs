@@ -34,7 +34,6 @@ public class UserProfileDto
     public string Email { get; set; } = "";
     public string Avatar { get; set; } = "";
     public string Role { get; set; } = "customer";
-    public string Address { get; set; } = "";
     public List<AddressDto> Addresses { get; set; } = new();
 }
 
@@ -43,6 +42,6 @@ public class UpdateProfileDto
     public string Name { get; set; } = "";
     public string Email { get; set; } = "";
     public string Avatar { get; set; } = "";
-    public string Address { get; set; } = "";
     public List<AddressDto>? Addresses { get; set; }
 }
+
