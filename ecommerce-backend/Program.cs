@@ -30,8 +30,12 @@ builder.Services.AddCors(options =>
     });
 });
 
-// 4. Add Controllers
-builder.Services.AddControllers();
+// 4. Add Controllers with global Enum-to-String JSON converters
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
+    });
 
 // 5. Add Swagger API Documentation with JWT Authorize support
 builder.Services.AddEndpointsApiExplorer();
