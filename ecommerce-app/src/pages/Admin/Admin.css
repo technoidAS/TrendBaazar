@@ -208,22 +208,64 @@
 }
 
 /* Dropdown selections for payment statuses */
-.admin-status-select {
-  padding: 0.35rem 0.65rem;
+.admin-select {
+  width: 100%;
+  min-height: 48px;
+  padding: 0.75rem 2.75rem 0.75rem 1rem;
   border-radius: var(--radius-md);
   border: 1px solid var(--border-primary);
-  background: var(--bg-tertiary);
+  background-color: var(--bg-tertiary);
+  background-image: linear-gradient(45deg, transparent 50%, var(--text-muted) 50%),
+    linear-gradient(135deg, var(--text-muted) 50%, transparent 50%);
+  background-position: calc(100% - 18px) 50%, calc(100% - 12px) 50%;
+  background-size: 6px 6px, 6px 6px;
+  background-repeat: no-repeat;
   color: var(--text-primary);
   outline: none;
-  font-size: 12px;
+  font-family: var(--font-body);
+  font-size: var(--font-size-sm);
   font-weight: var(--weight-semibold);
   cursor: pointer;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast),
+    background-color var(--transition-fast), color var(--transition-fast);
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
+.admin-select:hover {
+  border-color: rgba(249, 115, 22, 0.35);
+  background-color: rgba(255, 255, 255, 0.06);
+}
+
+.admin-select:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.12);
+}
+
+.admin-select option {
+  background: #121214;
+  color: var(--text-primary);
+}
+
+.admin-select-category {
+  min-height: 50px;
+}
+
+.admin-status-select {
+  min-width: 136px;
+  padding-right: 2.5rem;
 }
 
 .admin-status-select.select-processing { border-color: #ea580c; color: #f97316; }
 .admin-status-select.select-shipped { border-color: #2563eb; color: #3b82f6; }
 .admin-status-select.select-delivered { border-color: #16a34a; color: #22c55e; }
 .admin-status-select.select-cancelled { border-color: #dc2626; color: #ef4444; }
+
+.admin-status-select.select-processing:hover { box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.12); }
+.admin-status-select.select-shipped:hover { box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12); }
+.admin-status-select.select-delivered:hover { box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.12); }
+.admin-status-select.select-cancelled:hover { box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.12); }
 
 /* Dashboard modals */
 .admin-modal-backdrop {

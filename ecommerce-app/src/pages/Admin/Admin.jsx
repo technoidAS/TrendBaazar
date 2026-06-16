@@ -407,14 +407,7 @@ export function Admin() {
                 <select
                   value={newProdCategory}
                   onChange={(e) => setNewProdCategory(e.target.value)}
-                  style={{
-                    padding: '0.65rem 1rem',
-                    borderRadius: 'var(--radius-md)',
-                    border: '1px solid var(--border-primary)',
-                    background: 'var(--bg-tertiary)',
-                    color: 'var(--text-primary)',
-                    outline: 'none'
-                  }}
+                  className="admin-select admin-select-category"
                 >
                   <option value="apparel">Premium Apparel</option>
                   <option value="footwear">Design Footwear</option>
