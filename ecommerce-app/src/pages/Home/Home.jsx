@@ -18,6 +18,47 @@ const SHOWCASE_ITEMS = [
   { id: 5, type: 'Tech', name: 'Holo Smartwatch', price: '₹15,499', image: 'https://images.unsplash.com/photo-1546868871-7041f2a55e12?w=600&auto=format&fit=crop&q=80' }
 ];
 
+const COOLORS_PALETTE = [
+  '#f97316',
+  '#14b8a6',
+  '#f59e0b',
+  '#6366f1',
+  '#10b981',
+  '#fafaf9',
+  '#f43f5e',
+  '#eab308'
+];
+
+const AnimText = ({ text, plain = false }) => {
+    return (
+      <span className="coolors-text-container">
+        {text.split('').map((char, idx) => {
+          if (char === ' ') {
+            return <span key={idx} className="coolors-space">&nbsp;</span>;
+          }
+          const color = plain ? 'currentColor' : COOLORS_PALETTE[idx % COOLORS_PALETTE.length];
+          const initRot = idx % 2 === 0 ? '-7deg' : '5deg';
+          const midRot = idx % 2 === 0 ? '6deg' : '-5deg';
+          const delay = `${idx * 0.05}s`;
+          return (
+            <span
+              key={idx}
+              className="coolors-char"
+              style={{
+                animationDelay: delay,
+                '--char-color': color,
+                '--init-rot': initRot,
+                '--mid-rot': midRot
+              }}
+            >
+              {char}
+            </span>
+          );
+        })}
+      </span>
+    );
+  };
+
 export function Home() {
   const navigate = useNavigate();
   const { products, toggleWishlist, isWishlisted } = useProducts();
@@ -99,7 +140,7 @@ export function Home() {
           <FadeIn className="hero-content-centered">
             <div className="hero-badge-pill">
                 <span className="live-dot"></span>
-                <span className="pill-text">✦ 2025 Collection</span>
+                <span className="pill-text">✦ 2026 Collection</span>
               </div>
 
               <h1 className="hero-headline">
@@ -272,7 +313,11 @@ export function Home() {
               <TrendingUp size={13} />
               Limited Time Offer
             </span>
-            <h2 className="promo-title">Use Code <span className="text-gradient-cyan">TRENDBAZAR20</span></h2>
+            
+            <span className="promo-code">Use Code</span>
+            <h2 className="hero-main-title">
+                <AnimText text="TRENDBAZAR20" plain />
+            </h2>
             <p className="promo-desc">Get an instant 20% flat discount on all premium orders. Free shipping applied on all orders exceeding ₹9,999.</p>
             <Button variant="primary" size="lg" onClick={handleShopClick} iconRight={<ArrowRight size={18} />}>
               Claim Discount Now

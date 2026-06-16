@@ -9,6 +9,7 @@ export const endpoints = {
 
   // Product endpoints (ProductController)
   PRODUCTS: '/products',               // GET  - list/filter products; GET /:id for single product
+  BASE_PRODUCT: '/products',           // Base path for dynamic routes like /products/{id}/rate
   PRODUCTS_FEATURED: '/products/featured', // GET  - featured products only
   PRODUCTS_BRANDS: '/products/brands',     // GET  - distinct brand names
 

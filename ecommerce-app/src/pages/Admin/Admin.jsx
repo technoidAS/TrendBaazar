@@ -35,6 +35,9 @@ export function Admin() {
   const [newProdName, setNewProdName] = useState('');
   const [newProdPrice, setNewProdPrice] = useState('');
   const [newProdCategory, setNewProdCategory] = useState('apparel');
+  const [newProdBrand, setNewProdBrand] = useState('');
+  const [newProdColors, setNewProdColors] = useState('');
+  const [newProdSizes, setNewProdSizes] = useState('');
   const [newProdImage, setNewProdImage] = useState('');
   const [newProdDesc, setNewProdDesc] = useState('');
   const [newProdStock, setNewProdStock] = useState('10');
@@ -93,9 +96,13 @@ export function Admin() {
         name: newProdName,
         price: priceNum,
         category: newProdCategory,
+        brand: newProdBrand || 'TrendBaazar',
         image: newProdImage,
         description: newProdDesc || 'Premium e-commerce design edition.',
-        stock: parseInt(newProdStock) || 10
+        stock: parseInt(newProdStock) || 10,
+        colors: newProdColors ? newProdColors.split(',').map(c => c.trim()).filter(Boolean) : [],
+        sizes: newProdSizes ? newProdSizes.split(',').map(s => s.trim()).filter(Boolean) : [],
+        features: []
       });
       // Prepend local product state
       setProducts(prev => [result, ...prev]);
@@ -104,6 +111,9 @@ export function Admin() {
       setNewProdName('');
       setNewProdPrice('');
       setNewProdCategory('apparel');
+      setNewProdBrand('');
+      setNewProdColors('');
+      setNewProdSizes('');
       setNewProdImage('');
       setNewProdDesc('');
       setNewProdStock('10');
@@ -419,6 +429,26 @@ export function Admin() {
                 onChange={(e) => setNewProdImage(e.target.value)}
                 required
               />
+              <Input
+                label="Brand Name"
+                placeholder="e.g. NeoTech, AeroFlux, Apex"
+                value={newProdBrand}
+                onChange={(e) => setNewProdBrand(e.target.value)}
+              />
+              <div className="input-fields-row flex gap-md">
+                <Input
+                  label="Colors (comma-separated)"
+                  placeholder="e.g. Carbon Black, Neon Teal"
+                  value={newProdColors}
+                  onChange={(e) => setNewProdColors(e.target.value)}
+                />
+                <Input
+                  label="Sizes (comma-separated)"
+                  placeholder="e.g. S, M, L, XL or 8, 9, 10"
+                  value={newProdSizes}
+                  onChange={(e) => setNewProdSizes(e.target.value)}
+                />
+              </div>
               <Input
                 label="Product Description"
                 placeholder="e.g. Cyberpunk techwear hoodie designed for comfort."

@@ -84,6 +84,12 @@ export const apiProvider = {
     return items; // Return original items for consistency with localProvider
   },
 
+  rateProduct: async (productId, rating) => {
+    // Submit a star rating to the backend — upserts (re-rating replaces old value)
+    const response = await axiosInstance.post(`${endpoints.BASE_PRODUCT}/${productId}/rate`, { rating });
+    return response.data; // Returns { productId, newAverageRating, newReviewCount, userRating }
+  },
+
   // --- ORDERS DRIVER ---
   getOrders: async (userId) => {
     // Fetches the authenticated user's orders based on JWT token credentials

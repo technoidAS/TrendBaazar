@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Star, ShoppingBag, Heart, ShieldCheck, Truck, RefreshCw, ChevronLeft } from 'lucide-react';
 import { useProducts } from '../../context/ProductContext/ProductContext';
 import { useCart } from '../../hooks/useCart';
+import { useAuth } from '../../context/AuthContext/AuthContext';
 import productService from '../../services/productService';
 import Loader from '../../components/common/Loader/Loader';
 import Button from '../../components/common/Button/Button';
@@ -21,12 +22,21 @@ export function ProductDetails() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // User auth for conditional rating widget
+  const { user } = useAuth();
+
   // Detail pane option states
   const [activeImage, setActiveImage] = useState('');
   const [selectedColor, setSelectedColor] = useState('');
   const [selectedSize, setSelectedSize] = useState('');
   const [quantity, setQuantity] = useState(1);
   const [addingToCart, setAddingToCart] = useState(false);
+
+  // Rating widget state
+  const [userRating, setUserRating] = useState(0);       // Submitted rating (0 = none yet)
+  const [hoverRating, setHoverRating] = useState(0);     // Hover preview
+  const [ratingLoading, setRatingLoading] = useState(false);
+  const [ratingSuccess, setRatingSuccess] = useState(false);
 
   // Flipkart-style inner lens zoom styling and mouse trackers
   const [zoomStyle, setZoomStyle] = useState({
@@ -91,6 +101,29 @@ export function ProductDetails() {
       }
       setAddingToCart(false);
     }, 500);
+  };
+
+  // Handle star rating submission
+  const handleRateProduct = async (stars) => {
+    if (!user || ratingLoading) return;
+    setRatingLoading(true);
+    setRatingSuccess(false);
+    try {
+      const result = await productService.rateProduct(product.id, stars);
+      setUserRating(stars);
+      // Optimistically update displayed rating
+      setProduct(prev => ({
+        ...prev,
+        rating: result.newAverageRating,
+        reviewCount: result.newReviewCount
+      }));
+      setRatingSuccess(true);
+      setTimeout(() => setRatingSuccess(false), 2000);
+    } catch (err) {
+      console.error('Rating failed:', err);
+    } finally {
+      setRatingLoading(false);
+    }
   };
 
   if (loading) return <Loader type="fullscreen" />;
@@ -173,6 +206,38 @@ export function ProductDetails() {
               {product.rating} / 5.0 ({product.reviewCount} customer reviews)
             </span>
           </div>
+
+          {/* Interactive user rating widget */}
+          {user && (
+            <div className="user-rating-section">
+              <p className="user-rating-label">
+                {ratingSuccess
+                  ? `✓ Thanks for rating! You gave ${userRating} star${userRating > 1 ? 's' : ''}`
+                  : userRating > 0
+                  ? `Your rating: ${userRating} star${userRating > 1 ? 's' : ''} — click to change`
+                  : 'Rate this product:'}
+              </p>
+              <div className="user-rating-stars">
+                {Array.from({ length: 5 }).map((_, idx) => {
+                  const star = idx + 1;
+                  const filled = star <= (hoverRating || userRating);
+                  return (
+                    <button
+                      key={star}
+                      className={`user-star-btn ${filled ? 'user-star-active' : ''}`}
+                      onMouseEnter={() => setHoverRating(star)}
+                      onMouseLeave={() => setHoverRating(0)}
+                      onClick={() => handleRateProduct(star)}
+                      disabled={ratingLoading}
+                      aria-label={`Rate ${star} star${star > 1 ? 's' : ''}`}
+                    >
+                      <Star size={20} />
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
 
           <span className="details-price">{formatCurrency(product.price)}</span>
           <p className="details-description">{product.description}</p>

@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect, useContext } from 'react';
+import React, { createContext, useState, useEffect, useContext, useCallback } from 'react';
 import productService from '../../services/productService';
 import { STORAGE_KEYS } from '../../utils/constants';
 
@@ -61,16 +61,22 @@ export function ProductProvider({ children }) {
 
   const isWishlisted = (productId) => wishlist.includes(productId);
 
-  const setFilter = (key, value) => {
-    setFilters((prev) => ({
-      ...prev,
-      [key]: value,
-    }));
-  };
+  const setFilter = useCallback((key, value) => {
+    setFilters((prev) => {
+      if (prev[key] === value) {
+        return prev;
+      }
 
-  const resetFilters = () => {
+      return {
+        ...prev,
+        [key]: value,
+      };
+    });
+  }, []);
+
+  const resetFilters = useCallback(() => {
     setFilters(DEFAULT_FILTERS);
-  };
+  }, []);
 
   // Resolve active products list after filters and sorting have been applied
   const getFilteredProducts = () => {

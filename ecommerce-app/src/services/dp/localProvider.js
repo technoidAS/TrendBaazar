@@ -414,6 +414,26 @@ export const localProvider = {
     return items;
   },
 
+  rateProduct: async (productId, rating) => {
+    await delay(300);
+    // In local mode: update the product rating in localStorage optimistically
+    const products = JSON.parse(localStorage.getItem(STORAGE_KEYS.PRODUCTS)) || [];
+    const idx = products.findIndex(p => p.id === productId);
+    if (idx === -1) throw new Error('Product not found');
+
+    const product = products[idx];
+    // Simulate recalculating average (treat as new rating added)
+    const oldTotal = product.rating * product.reviewCount;
+    const newCount = product.reviewCount + 1;
+    const newAvg = Math.round(((oldTotal + rating) / newCount) * 10) / 10;
+    product.rating = newAvg;
+    product.reviewCount = newCount;
+    products[idx] = product;
+    localStorage.setItem(STORAGE_KEYS.PRODUCTS, JSON.stringify(products));
+
+    return { productId, newAverageRating: newAvg, newReviewCount: newCount, userRating: rating };
+  },
+
   // --- AUTH DRIVER ---
   requestOtp: async (phone) => {
     await delay(500);

@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { ShoppingBag, Heart, Sun, Moon, User, LogOut, ShieldAlert, Search, X } from 'lucide-react';
 import { useAuth } from '../../../context/AuthContext/AuthContext';
 import { useCart } from '../../../hooks/useCart';
+import { useDebounce } from '../../../hooks/useDebounce';
 import { useProducts } from '../../../context/ProductContext/ProductContext';
 import { useTheme } from '../../../context/ThemeContext/ThemeContext';
 import { useToast } from '../../../context/ToastContext/ToastContext';
@@ -18,6 +19,7 @@ export function Navbar() {
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const debouncedSearchQuery = useDebounce(searchQuery, 500);
   const profileRef = useRef(null);
   const searchRef = useRef(null);
   const searchInputRef = useRef(null);
@@ -49,6 +51,16 @@ export function Navbar() {
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
+
+  useEffect(() => {
+    const trimmedQuery = debouncedSearchQuery.trim();
+
+    setFilter('searchQuery', trimmedQuery);
+
+    if (trimmedQuery) {
+      navigate('/shop');
+    }
+  }, [debouncedSearchQuery, navigate, setFilter]);
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();

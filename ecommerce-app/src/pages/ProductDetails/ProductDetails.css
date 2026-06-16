@@ -1,4 +1,48 @@
 /* Product details page styles for TrendBaazar */
+
+/* ── Interactive User Rating Widget ─────────────────── */
+.user-rating-section {
+  margin: var(--space-xs) 0 var(--space-sm);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xs);
+}
+
+.user-rating-label {
+  font-size: var(--font-size-sm);
+  color: var(--text-muted);
+  font-weight: var(--weight-medium);
+  transition: color var(--transition-fast);
+}
+
+.user-rating-stars {
+  display: flex;
+  gap: 4px;
+}
+
+.user-star-btn {
+  background: none;
+  border: none;
+  padding: 4px;
+  cursor: pointer;
+  color: var(--text-muted);
+  transition: color var(--transition-fast), transform var(--transition-fast);
+  border-radius: var(--radius-sm);
+}
+
+.user-star-btn:hover,
+.user-star-btn.user-star-active {
+  color: #facc15;        /* gold yellow */
+  transform: scale(1.2);
+}
+
+.user-star-btn:disabled {
+  opacity: 0.5;
+  cursor: wait;
+}
+/* ───────────────────────────────────────────────────── */
+
+
 .product-details-page {
   padding-top: var(--space-lg);
   padding-bottom: var(--space-3xl);
