@@ -32,7 +32,12 @@ export function CartProvider({ children }) {
 
   // Load cart when user session switches
   useEffect(() => {
-    loadCart();
+    if (user) {
+      loadCart();
+    } else {
+      setCartItems([]);
+      setLoading(false);
+    }
   }, [user]);
 
   // Sync cart items to local storage

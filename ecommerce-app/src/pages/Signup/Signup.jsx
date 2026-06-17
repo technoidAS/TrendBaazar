@@ -6,6 +6,7 @@ import { useToast } from '../../context/ToastContext/ToastContext';
 import Button from '../../components/common/Button/Button';
 import Input from '../../components/common/Input/Input';
 import FadeIn from '../../components/animations/FadeIn';
+import InteractiveBubbles from '../../components/animations/InteractiveBubbles';
 import Home from '../Home/Home';
 import '../Login/Login.css';
 
@@ -99,6 +100,8 @@ export function Signup() {
         <Home />
       </div>
 
+      <InteractiveBubbles />
+
       <div className="login-card-wrapper glass-panel">
         <div className="login-form-pane">
           <FadeIn className="login-form-wrapper">
@@ -148,7 +151,7 @@ export function Signup() {
                 <Input
                   label="Mobile Phone Number"
                   type="tel"
-                  placeholder="e.g. +1 (555) 019-2834"
+                  placeholder="e.g. XXXXXXXX34"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                   iconLeft={<Phone size={18} />}
