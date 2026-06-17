@@ -1,21 +1,21 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { SlidersHorizontal, Search } from 'lucide-react';
 import { useProducts } from '../../context/ProductContext/ProductContext';
 import Sidebar from '../../components/layout/Sidebar/Sidebar';
-import Pagination from '../../components/common/Pagination/Pagination';
 import Loader from '../../components/common/Loader/Loader';
 import Button from '../../components/common/Button/Button';
 import ErrorView from '../../components/common/Error/ErrorView';
 import ProductCard from '../../components/common/ProductCard/ProductCard';
-import { PAGINATION_LIMIT } from '../../utils/constants';
 import './ProductListing.css';
 
 export function ProductListing() {
-  const { filteredProducts, loading, error, filters, setFilter } = useProducts();
+  const { filteredProducts, loading, error, filters, setFilter, hasMore, loadMore } = useProducts();
   const [searchParams] = useSearchParams();
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
+  
+  // Sentinel ref for infinite scroll
+  const observerRef = useRef(null);
 
   // Sync route category search params to context
   useEffect(() => {
@@ -23,17 +23,31 @@ export function ProductListing() {
     if (categoryParam) {
       setFilter('category', categoryParam);
     }
-  }, [searchParams]);
+  }, [searchParams, setFilter]);
 
-  // Reset page when filters change
+  // Setup intersection observer for infinite scroll
   useEffect(() => {
-    setCurrentPage(1);
-  }, [filters]);
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const first = entries[0];
+        if (first.isIntersecting && hasMore && !loading) {
+          loadMore();
+        }
+      },
+      { threshold: 0.1 }
+    );
 
-  const handlePageChange = (page) => {
-    setCurrentPage(page);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
+    const currentSentinel = observerRef.current;
+    if (currentSentinel) {
+      observer.observe(currentSentinel);
+    }
+
+    return () => {
+      if (currentSentinel) {
+        observer.unobserve(currentSentinel);
+      }
+    };
+  }, [hasMore, loading, loadMore]);
 
   if (error) {
     return (
@@ -43,9 +57,7 @@ export function ProductListing() {
     );
   }
 
-  // Slice active page products
-  const startIndex = (currentPage - 1) * PAGINATION_LIMIT;
-  const paginatedProducts = filteredProducts.slice(startIndex, startIndex + PAGINATION_LIMIT);
+  const showInitialLoading = loading && filteredProducts.length === 0;
 
   return (
     <div className="shop-page-container container">
@@ -80,9 +92,9 @@ export function ProductListing() {
 
         {/* Right Side Grid Showcase */}
         <div className="shop-products-wrapper">
-          {loading ? (
+          {showInitialLoading ? (
             <Loader type="skeleton" count={4} />
-          ) : paginatedProducts.length === 0 ? (
+          ) : filteredProducts.length === 0 ? (
             <div className="shop-empty-state glass-card flex flex-col justify-center align-center">
               <Search size={40} className="text-muted" />
               <h3>No products found</h3>
@@ -94,18 +106,19 @@ export function ProductListing() {
           ) : (
             <>
               <div className="grid-products">
-                {paginatedProducts.map((prod) => (
+                {filteredProducts.map((prod) => (
                   <ProductCard key={prod.id} product={prod} />
                 ))}
               </div>
 
-              {/* Bottom Pagination links */}
-              <Pagination
-                currentPage={currentPage}
-                totalItems={filteredProducts.length}
-                itemsPerPage={PAGINATION_LIMIT}
-                onPageChange={handlePageChange}
-              />
+              {/* Infinite scroll sentinel */}
+              <div ref={observerRef} className="infinite-scroll-sentinel" style={{ minHeight: '30px', margin: '20px 0' }}>
+                {loading && hasMore && (
+                  <div className="flex justify-center align-center" style={{ padding: '20px 0' }}>
+                    <Loader type="spinner" size="md" />
+                  </div>
+                )}
+              </div>
             </>
           )}
         </div>

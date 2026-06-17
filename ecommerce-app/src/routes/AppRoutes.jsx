@@ -14,6 +14,7 @@ import Cart from '../pages/Cart/Cart';
 import Wishlist from '../pages/Wishlist/Wishlist';
 import Checkout from '../pages/Checkout/Checkout';
 import Login from '../pages/Login/Login';
+import Signup from '../pages/Signup/Signup';
 import Profile from '../pages/Profile/Profile';
 import Admin from '../pages/Admin/Admin';
 import NotFound from '../pages/NotFound/NotFound';
@@ -35,6 +36,14 @@ export function AppRoutes() {
           element={
             <PublicRoute>
               <Login />
+            </PublicRoute>
+          }
+        />
+        <Route
+          path="signup"
+          element={
+            <PublicRoute>
+              <Signup />
             </PublicRoute>
           }
         />

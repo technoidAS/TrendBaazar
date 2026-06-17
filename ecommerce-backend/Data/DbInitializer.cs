@@ -48,7 +48,23 @@ public static class DbInitializer
             context.SaveChanges();
         }
 
-        // 2. Seed Products to reach exact counts: Apparel: 14, Footwear: 9, Gadgets: 22, Accessories: 12 (Total: 57)
+        // 2. Seed Categories
+        if (!context.Categories.Any())
+        {
+            var categories = new List<Category>
+            {
+                new() { Name = "apparel" },
+                new() { Name = "footwear" },
+                new() { Name = "accessories" },
+                new() { Name = "gadgets" }
+            };
+            context.Categories.AddRange(categories);
+            context.SaveChanges();
+        }
+
+        var categoryMap = context.Categories.ToDictionary(c => c.Name, c => c.Id);
+
+        // 3. Seed Products to reach exact counts: Apparel: 14, Footwear: 9, Gadgets: 22, Accessories: 12 (Total: 57)
         if (!context.Products.Any())
         {
             var products = new List<Product>();
@@ -59,7 +75,7 @@ public static class DbInitializer
                 Id = "prod_1",
                 Name = "Quantum Flux Sneakers",
                 Price = 9999m,
-                Category = "footwear",
+                CategoryId = categoryMap["footwear"],
                 Brand = "AeroFlux",
                 Image = "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600&auto=format&fit=crop&q=80",
                 Images = new List<string> { "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600&auto=format&fit=crop&q=80", "https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=600&auto=format&fit=crop&q=80" },
@@ -78,7 +94,7 @@ public static class DbInitializer
                 Id = "prod_2",
                 Name = "Cyberpunk Techwear Jacket",
                 Price = 14500m,
-                Category = "apparel",
+                CategoryId = categoryMap["apparel"],
                 Brand = "NeoTech",
                 Image = "https://images.unsplash.com/photo-1551028719-00167b16eac5?w=600&auto=format&fit=crop&q=80",
                 Images = new List<string> { "https://images.unsplash.com/photo-1551028719-00167b16eac5?w=600&auto=format&fit=crop&q=80", "https://images.unsplash.com/photo-1544022613-e87ca75a784a?w=600&auto=format&fit=crop&q=80" },
@@ -97,7 +113,7 @@ public static class DbInitializer
                 Id = "prod_3",
                 Name = "Aether Noise-Canceling Headphones",
                 Price = 19999m,
-                Category = "gadgets",
+                CategoryId = categoryMap["gadgets"],
                 Brand = "Aether",
                 Image = "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600&auto=format&fit=crop&q=80",
                 Images = new List<string> { "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600&auto=format&fit=crop&q=80" },
@@ -116,7 +132,7 @@ public static class DbInitializer
                 Id = "prod_4",
                 Name = "Chronos Kinetic Smartwatch",
                 Price = 15999m,
-                Category = "gadgets",
+                CategoryId = categoryMap["gadgets"],
                 Brand = "Chronos",
                 Image = "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600&auto=format&fit=crop&q=80",
                 Images = new List<string> { "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600&auto=format&fit=crop&q=80" },
@@ -135,7 +151,7 @@ public static class DbInitializer
                 Id = "prod_5",
                 Name = "Vaporwave Neon Backpack",
                 Price = 4999m,
-                Category = "accessories",
+                CategoryId = categoryMap["accessories"],
                 Brand = "VaporWare",
                 Image = "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=600&auto=format&fit=crop&q=80",
                 Images = new List<string> { "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=600&auto=format&fit=crop&q=80" },
@@ -154,7 +170,7 @@ public static class DbInitializer
                 Id = "prod_6",
                 Name = "Hyperion Leather Boots",
                 Price = 12999m,
-                Category = "footwear",
+                CategoryId = categoryMap["footwear"],
                 Brand = "Zenith",
                 Image = "https://images.unsplash.com/photo-1608256246200-53e635b5b65f?w=600&auto=format&fit=crop&q=80",
                 Images = new List<string> { "https://images.unsplash.com/photo-1608256246200-53e635b5b65f?w=600&auto=format&fit=crop&q=80" },
@@ -173,7 +189,7 @@ public static class DbInitializer
                 Id = "prod_7",
                 Name = "Spectrum RGB Mechanical Keyboard",
                 Price = 8999m,
-                Category = "gadgets",
+                CategoryId = categoryMap["gadgets"],
                 Brand = "Apex",
                 Image = "https://images.unsplash.com/photo-1618384887929-16ec33fab9ef?w=600&auto=format&fit=crop&q=80",
                 Images = new List<string> { "https://images.unsplash.com/photo-1618384887929-16ec33fab9ef?w=600&auto=format&fit=crop&q=80" },
@@ -192,7 +208,7 @@ public static class DbInitializer
                 Id = "prod_8",
                 Name = "Nebula Oversized Hoodie",
                 Price = 5999m,
-                Category = "apparel",
+                CategoryId = categoryMap["apparel"],
                 Brand = "VaporWare",
                 Image = "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?w=600&auto=format&fit=crop&q=80",
                 Images = new List<string> { "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?w=600&auto=format&fit=crop&q=80" },
@@ -235,7 +251,7 @@ public static class DbInitializer
 
             foreach (var category in categoryTargets.Keys)
             {
-                var currentCount = products.Count(p => p.Category == category);
+                var currentCount = products.Count(p => p.CategoryId == categoryMap[category]);
                 var target = categoryTargets[category];
                 var needed = target - currentCount;
 
@@ -288,7 +304,7 @@ public static class DbInitializer
                         Id = $"prod_gen_{category}_{i + 1}",
                         Name = name,
                         Price = price,
-                        Category = category,
+                        CategoryId = categoryMap[category],
                         Brand = brand,
                         Image = image,
                         Images = new List<string> { image },

@@ -11,6 +11,7 @@ public class User
     public string Name { get; set; } = null!;
     public string Email { get; set; } = "";
     public string Avatar { get; set; } = "";
+    public string Address { get; set; } = "";
     public string Role { get; set; } = "customer"; // "customer" | "admin"
 
     // Persisted cart — stored as JSON string in DB column

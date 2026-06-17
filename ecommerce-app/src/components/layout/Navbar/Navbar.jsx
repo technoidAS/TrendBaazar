@@ -54,17 +54,19 @@ export function Navbar() {
 
   useEffect(() => {
     const trimmedQuery = debouncedSearchQuery.trim();
-
-    setFilter('searchQuery', trimmedQuery);
-
     if (trimmedQuery) {
+      setFilter('category', 'all');
+      setFilter('searchQuery', trimmedQuery);
       navigate('/shop');
+    } else {
+      setFilter('searchQuery', '');
     }
   }, [debouncedSearchQuery, navigate, setFilter]);
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
     if (searchQuery.trim()) {
+      setFilter('category', 'all');
       setFilter('searchQuery', searchQuery.trim());
       navigate('/shop');
     }
@@ -78,6 +80,7 @@ export function Navbar() {
 
   const handleLogoClick = () => {
     setFilter('searchQuery', '');
+    setFilter('category', 'all');
   };
 
   return (
@@ -88,7 +91,15 @@ export function Navbar() {
         </Link>
 
         <nav className="navbar-actions">
-          <Link to="/shop" className="navbar-link">
+          <Link
+            to="/shop"
+            className="navbar-link"
+            onClick={() => {
+              setFilter('category', 'all');
+              setFilter('searchQuery', '');
+              setSearchQuery('');
+            }}
+          >
             Shop
           </Link>
 

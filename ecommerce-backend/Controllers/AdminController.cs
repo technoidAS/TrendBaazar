@@ -49,9 +49,9 @@ public class AdminController : ControllerBase
                 g => g.Sum(oi => oi.Price * oi.Quantity)
             );
 
-        var dbProducts = await _context.Products.ToListAsync();
+        var dbProducts = await _context.Products.Include(p => p.Category).ToListAsync();
         var categoryProductCounts = dbProducts
-            .GroupBy(p => p.Category.ToLower())
+            .GroupBy(p => p.CategoryName.ToLower())
             .ToDictionary(
                 g => g.Key,
                 g => g.Count()
@@ -149,64 +149,103 @@ public class AdminController : ControllerBase
     [HttpGet("products")]
     public async Task<IActionResult> GetAllProducts()
     {
-        var products = await _context.Products.OrderBy(p => p.Name).ToListAsync();
+        var products = await _context.Products.Include(p => p.Category).OrderBy(p => p.Name).ToListAsync();
         return Ok(products);
     }
 
     [HttpPost("products")]
-    public async Task<IActionResult> CreateProduct([FromBody] Product product)
+    public async Task<IActionResult> CreateProduct([FromBody] ProductInputDto dto)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
 
-        // Ensure Id is empty or set a new GUID
-        if (string.IsNullOrEmpty(product.Id))
+        var categoryName = dto.Category.Trim().ToLower();
+        var category = await _context.Categories.FirstOrDefaultAsync(c => c.Name == categoryName);
+        if (category == null)
         {
-            product.Id = Guid.NewGuid().ToString();
+            category = new Category { Name = categoryName };
+            _context.Categories.Add(category);
+            await _context.SaveChangesAsync();
         }
-        else
+
+        var productId = string.IsNullOrEmpty(dto.Id) ? Guid.NewGuid().ToString() : dto.Id;
+        if (!string.IsNullOrEmpty(dto.Id))
         {
-            var exists = await _context.Products.AnyAsync(p => p.Id == product.Id);
+            var exists = await _context.Products.AnyAsync(p => p.Id == dto.Id);
             if (exists)
             {
-                return BadRequest(new { message = $"Product with ID '{product.Id}' already exists." });
+                return BadRequest(new { message = $"Product with ID '{dto.Id}' already exists." });
             }
         }
 
+        var product = new Product
+        {
+            Id = productId,
+            Name = dto.Name,
+            Price = dto.Price,
+            CategoryId = category.Id,
+            Brand = dto.Brand,
+            Image = dto.Image,
+            Images = dto.Images,
+            Rating = dto.Rating,
+            ReviewCount = dto.ReviewCount,
+            Description = dto.Description,
+            Features = dto.Features,
+            Sizes = dto.Sizes,
+            Colors = dto.Colors,
+            Stock = dto.Stock,
+            Featured = dto.Featured,
+            CreatedAt = DateTime.UtcNow,
+            UpdatedAt = DateTime.UtcNow
+        };
+
         _context.Products.Add(product);
         await _context.SaveChangesAsync();
+
+        product.Category = category;
 
         return CreatedAtAction(nameof(GetProductByIdFromCatalog), new { id = product.Id }, product);
     }
 
     [HttpPut("products/{id}")]
-    public async Task<IActionResult> UpdateProduct(string id, [FromBody] Product productInput)
+    public async Task<IActionResult> UpdateProduct(string id, [FromBody] ProductInputDto dto)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
 
-        var product = await _context.Products.FindAsync(id);
+        var product = await _context.Products.Include(p => p.Category).FirstOrDefaultAsync(p => p.Id == id);
         if (product == null)
         {
             return NotFound(new { message = $"Product with ID '{id}' not found." });
         }
 
-        product.Name = productInput.Name;
-        product.Price = productInput.Price;
-        product.Category = productInput.Category;
-        product.Brand = productInput.Brand;
-        product.Image = productInput.Image;
-        product.Images = productInput.Images;
-        product.Rating = productInput.Rating;
-        product.ReviewCount = productInput.ReviewCount;
-        product.Description = productInput.Description;
-        product.Features = productInput.Features;
-        product.Sizes = productInput.Sizes;
-        product.Colors = productInput.Colors;
-        product.Stock = productInput.Stock;
-        product.Featured = productInput.Featured;
+        var categoryName = dto.Category.Trim().ToLower();
+        var category = await _context.Categories.FirstOrDefaultAsync(c => c.Name == categoryName);
+        if (category == null)
+        {
+            category = new Category { Name = categoryName };
+            _context.Categories.Add(category);
+            await _context.SaveChangesAsync();
+        }
+
+        product.Name = dto.Name;
+        product.Price = dto.Price;
+        product.CategoryId = category.Id;
+        product.Brand = dto.Brand;
+        product.Image = dto.Image;
+        product.Images = dto.Images;
+        product.Rating = dto.Rating;
+        product.ReviewCount = dto.ReviewCount;
+        product.Description = dto.Description;
+        product.Features = dto.Features;
+        product.Sizes = dto.Sizes;
+        product.Colors = dto.Colors;
+        product.Stock = dto.Stock;
+        product.Featured = dto.Featured;
         product.UpdatedAt = DateTime.UtcNow;
 
         _context.Products.Update(product);
         await _context.SaveChangesAsync();
+
+        product.Category = category;
 
         return Ok(product);
     }
@@ -231,7 +270,7 @@ public class AdminController : ControllerBase
     [ApiExplorerSettings(IgnoreApi = true)]
     public async Task<IActionResult> GetProductByIdFromCatalog(string id)
     {
-        var product = await _context.Products.FindAsync(id);
+        var product = await _context.Products.Include(p => p.Category).FirstOrDefaultAsync(p => p.Id == id);
         if (product == null) return NotFound();
         return Ok(product);
     }

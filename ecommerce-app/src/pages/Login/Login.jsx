@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import {
   ShoppingBag,
   ShieldCheck,
@@ -233,6 +233,12 @@ export function Login() {
     setLoading(true);
     try {
       const response = await requestOtp(phone);
+      if (response?.nextStep === 'signup') {
+        addToast(response.message || 'No account found. Redirecting to sign up.', 'info');
+        navigate('/signup', { replace: true, state: { phone } });
+        return;
+      }
+
       if (isApiMode) {
         setSuccessMsg(response.message || `OTP sent to ${phone}. Please check your backend terminal console for the verification code.`);
         addToast('OTP verification code dispatched.', 'info');
@@ -250,7 +256,6 @@ export function Login() {
     }
   };
 
-  // Submit OTP Code
   const handleVerifyOtp = async (e) => {
     e.preventDefault();
     setOtpError('');
@@ -271,13 +276,7 @@ export function Login() {
     setLoading(true);
     try {
       const loggedUser = await verifyOtp(phone, trimmedOtp);
-      // Detect new user: local provider uses 'Trendsetter-', API backend uses 'User ' prefix
-      const isNew = loggedUser.name?.startsWith('Trendsetter-') || loggedUser.name?.startsWith('User ');
-      if (isNew) {
-        addToast('Welcome to TrendBaazar! Profile registered successfully.', 'success');
-      } else {
-        addToast(`Welcome back, ${loggedUser.name}!`, 'success');
-      }
+      addToast(`Welcome back, ${loggedUser.name}!`, 'success');
       if (loggedUser.role === 'admin') {
         navigate('/admin', { replace: true });
       } else {
@@ -350,9 +349,9 @@ export function Login() {
         <div className="login-form-pane">
           <FadeIn className="login-form-wrapper">
             <div className="login-form-header">
-              <h1 className="auth-title">Login or Register</h1>
+              <h1 className="auth-title">Login</h1>
               <p className="auth-subtitle">
-                Verify your mobile to checkout and track purchases.
+                Enter your mobile number to get an OTP if you already have an account.
               </p>
             </div>
 
@@ -395,6 +394,9 @@ export function Login() {
                 
                 <div className="auth-help-links flex justify-between align-center">
                   <span className="demo-credentials-helper">Demo phone: +1 (555) 019-2834</span>
+                  <Link to="/signup" style={{ color: 'var(--primary)', fontSize: '11px', fontWeight: 600 }}>
+                    New here? Sign up
+                  </Link>
                 </div>
 
                 <Button type="submit" variant="primary" loading={loading} className="auth-submit-btn" iconRight={<ArrowRight size={18} />}>

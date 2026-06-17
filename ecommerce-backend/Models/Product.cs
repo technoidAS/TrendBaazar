@@ -9,7 +9,13 @@ public class Product
     public string Id { get; set; } = Guid.NewGuid().ToString();
     public string Name { get; set; } = null!;
     public decimal Price { get; set; }       // decimal (not double) for financial accuracy
-    public string Category { get; set; } = null!;
+    public string CategoryId { get; set; } = null!;
+    [JsonIgnore]
+    public Category Category { get; set; } = null!;
+
+    [System.Text.Json.Serialization.JsonPropertyName("category")]
+    public string CategoryName => Category?.Name ?? "";
+
     public string Brand { get; set; } = null!;
     public string Image { get; set; } = null!;
 

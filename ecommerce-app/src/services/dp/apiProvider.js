@@ -44,9 +44,20 @@ const mapApiOrderToFrontend = (apiOrder) => {
 
 export const apiProvider = {
   // --- PRODUCTS DRIVER ---
-  getProducts: async () => {
-    const response = await axiosInstance.get(endpoints.PRODUCTS);
+  getProducts: async (params = {}) => {
+    const response = await axiosInstance.get(endpoints.PRODUCTS, { params });
     return response.data;
+  },
+
+  getCategories: async (search = '') => {
+    const response = await axiosInstance.get(endpoints.PRODUCTS_CATEGORIES, { params: { search } });
+    return response.data;
+  },
+
+  getAdminProducts: async () => {
+    // Admin products endpoint returns the full list (no pagination)
+    const response = await axiosInstance.get(endpoints.ADMIN_PRODUCTS);
+    return Array.isArray(response.data) ? response.data : (response.data.products || []);
   },
 
   getProductById: async (id) => {
@@ -57,6 +68,11 @@ export const apiProvider = {
   // --- AUTH DRIVER ---
   requestOtp: async (phone) => {
     const response = await axiosInstance.post(endpoints.OTP_REQUEST, { phone });
+    return response.data;
+  },
+
+  signup: async (payload) => {
+    const response = await axiosInstance.post(endpoints.SIGNUP, payload);
     return response.data;
   },
 
@@ -146,6 +162,11 @@ export const apiProvider = {
 
   addProduct: async (productData) => {
     const response = await axiosInstance.post(endpoints.ADMIN_PRODUCTS, productData);
+    return response.data;
+  },
+
+  updateProduct: async (productId, productData) => {
+    const response = await axiosInstance.put(`${endpoints.ADMIN_PRODUCTS}/${productId}`, productData);
     return response.data;
   },
 

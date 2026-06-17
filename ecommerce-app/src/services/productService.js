@@ -1,18 +1,32 @@
 import dp from './dp/dpSelector';
 
 export const productService = {
-  getProducts: () => {
-    return dp.getProducts();
+  // Public paginated product feed
+  getProducts: (params) => {
+    return dp.getProducts(params);
   },
 
+  // Sidebar categories (filtered by search if provided)
+  getCategories: (search) => {
+    return dp.getCategories(search);
+  },
+
+  // Single product page
   getProductById: (id) => {
     return dp.getProductById(id);
   },
 
+  // Admin — create
   addProduct: (productData) => {
     return dp.addProduct(productData);
   },
 
+  // Admin — update
+  updateProduct: (productId, productData) => {
+    return dp.updateProduct(productId, productData);
+  },
+
+  // Admin — delete
   deleteProduct: (id) => {
     return dp.deleteProduct(id);
   },
@@ -24,4 +38,3 @@ export const productService = {
 };
 
 export default productService;
-

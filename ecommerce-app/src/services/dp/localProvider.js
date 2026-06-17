@@ -388,15 +388,124 @@ initStorage();
 
 export const localProvider = {
   // --- PRODUCTS DRIVER ---
-  getProducts: async () => {
+  getProducts: async (params = {}) => {
     await delay(300);
-    return JSON.parse(localStorage.getItem(STORAGE_KEYS.PRODUCTS));
+    const {
+      category,
+      search,
+      brand,
+      minRating,
+      minPrice,
+      maxPrice,
+      sortBy,
+      page = 1,
+      pageSize = 12
+    } = params;
+
+    let products = JSON.parse(localStorage.getItem(STORAGE_KEYS.PRODUCTS)) || [];
+
+    // 1. Category Filter
+    if (category) {
+      const categoryLower = category.toLowerCase();
+      products = products.filter(p => (p.category || '').toLowerCase() === categoryLower);
+    }
+
+    // 2. Search Text
+    if (search) {
+      const searchLower = search.toLowerCase();
+      products = products.filter(p =>
+        (p.name || '').toLowerCase().includes(searchLower) ||
+        (p.description || '').toLowerCase().includes(searchLower) ||
+        (p.brand || '').toLowerCase().includes(searchLower) ||
+        (p.category || '').toLowerCase().includes(searchLower)
+      );
+    }
+
+    // 3. Brand Filter
+    if (brand) {
+      const brandLower = brand.toLowerCase();
+      products = products.filter(p => (p.brand || '').toLowerCase() === brandLower);
+    }
+
+    // 4. Rating Filter
+    if (minRating !== undefined && minRating !== null) {
+      products = products.filter(p => p.rating >= Number(minRating));
+    }
+
+    // 5. Price Filters
+    if (minPrice !== undefined && minPrice !== null) {
+      products = products.filter(p => p.price >= Number(minPrice));
+    }
+    if (maxPrice !== undefined && maxPrice !== null) {
+      products = products.filter(p => p.price <= Number(maxPrice));
+    }
+
+    // 6. Sorting
+    if (sortBy) {
+      const sortLower = sortBy.toLowerCase();
+      if (sortLower === 'price_asc') {
+        products.sort((a, b) => a.price - b.price);
+      } else if (sortLower === 'price_desc') {
+        products.sort((a, b) => b.price - a.price);
+      } else if (sortLower === 'rating') {
+        products.sort((a, b) => b.rating - a.rating);
+      } else if (sortLower === 'reviews') {
+        products.sort((a, b) => b.reviewCount - a.reviewCount);
+      }
+    }
+
+    const totalCount = products.length;
+
+    // Apply Pagination
+    const pageNum = Number(page);
+    const pageSizeNum = Number(pageSize);
+    const skip = (pageNum - 1) * pageSizeNum;
+    const paginatedProducts = products.slice(skip, skip + pageSizeNum);
+
+    const hasMore = (skip + paginatedProducts.length) < totalCount;
+
+    return {
+      products: paginatedProducts,
+      totalCount,
+      hasMore,
+      page: pageNum,
+      pageSize: pageSizeNum
+    };
+  },
+
+  getCategories: async (search = '') => {
+    await delay(200);
+    let products = JSON.parse(localStorage.getItem(STORAGE_KEYS.PRODUCTS)) || [];
+    
+    if (search) {
+      const searchLower = search.toLowerCase();
+      products = products.filter(p =>
+        (p.name || '').toLowerCase().includes(searchLower) ||
+        (p.description || '').toLowerCase().includes(searchLower) ||
+        (p.brand || '').toLowerCase().includes(searchLower) ||
+        (p.category || '').toLowerCase().includes(searchLower)
+      );
+    }
+    
+    const categoriesSet = new Set();
+    products.forEach(p => {
+      if (p.category) {
+        categoriesSet.add(p.category.toLowerCase());
+      }
+    });
+
+    return Array.from(categoriesSet).sort();
   },
 
   getProductById: async (id) => {
     await delay(200);
     const products = JSON.parse(localStorage.getItem(STORAGE_KEYS.PRODUCTS));
     return products.find(p => p.id === id) || null;
+  },
+
+  getAdminProducts: async () => {
+    await delay(300);
+    return JSON.parse(localStorage.getItem(STORAGE_KEYS.PRODUCTS) || '[]');
   },
 
   // --- CART DRIVER ---
@@ -440,8 +549,57 @@ export const localProvider = {
     if (!phone || phone.trim().length < 8) {
       throw new Error('Please enter a valid mobile number');
     }
+    const cleanInputPhone = (phone || '').replace(/\D/g, '');
+    const users = JSON.parse(localStorage.getItem('trendbaazar_users') || '[]');
+    const userExists = users.some(u => (u.phone || '').replace(/\D/g, '') === cleanInputPhone);
+
+    if (!userExists) {
+      return {
+        success: true,
+        message: 'No account found for this phone number. Please sign up first.',
+        nextStep: 'signup',
+        userExists: false
+      };
+    }
+
     // Simulate sending OTP. In mock mode, we assume the valid OTP is '0000'
-    return { success: true, message: 'OTP sent successfully to ' + phone, otp: '0000' };
+    return { success: true, message: 'OTP sent successfully to ' + phone, nextStep: 'verify', userExists: true, otp: '0000' };
+  },
+
+  signup: async (payload) => {
+    await delay(500);
+    const phone = (payload?.phone || '').trim();
+    const name = (payload?.name || '').trim();
+
+    if (!phone || phone.replace(/\D/g, '').length < 8) {
+      throw new Error('Please enter a valid mobile number');
+    }
+
+    if (!name) {
+      throw new Error('Please enter your name');
+    }
+
+    const users = JSON.parse(localStorage.getItem('trendbaazar_users') || '[]');
+    const existing = users.find(u => (u.phone || '').replace(/\D/g, '') === phone.replace(/\D/g, ''));
+    if (existing) {
+      throw new Error('An account already exists for this phone number. Please log in instead.');
+    }
+
+    const user = {
+      id: generateId('usr'),
+      name,
+      phone,
+      email: payload?.email || '',
+      avatar: payload?.avatar || '',
+      address: payload?.address || '',
+      addresses: [],
+      role: phone.replace(/\D/g, '') === '9999999999' ? 'admin' : 'customer'
+    };
+
+    users.push(user);
+    localStorage.setItem('trendbaazar_users', JSON.stringify(users));
+
+    return { success: true, message: 'Account created successfully. Request OTP to continue.', user };
   },
 
   verifyOtp: async (phone, otp) => {
@@ -455,20 +613,7 @@ export const localProvider = {
     let user = users.find(u => (u.phone || '').replace(/\D/g, '') === cleanInputPhone);
 
     if (!user) {
-      // Auto-create new user on verification success with empty values
-      const shortSuffix = cleanInputPhone.slice(-4) || 'User';
-      user = {
-        id: generateId('usr'),
-        name: `Trendsetter-${shortSuffix}`,
-        phone: phone,
-        email: '',
-        avatar: '',
-        address: '',
-        addresses: []
-      };
-
-      users.push(user);
-      localStorage.setItem('trendbaazar_users', JSON.stringify(users));
+      throw new Error('No account found for this phone number. Please sign up first.');
     }
 
     return { user, token: `jwt_${user.id}_session_key` };
@@ -550,6 +695,16 @@ export const localProvider = {
     products.unshift(newProduct);
     localStorage.setItem(STORAGE_KEYS.PRODUCTS, JSON.stringify(products));
     return newProduct;
+  },
+
+  updateProduct: async (productId, productData) => {
+    await delay(400);
+    const products = JSON.parse(localStorage.getItem(STORAGE_KEYS.PRODUCTS) || '[]');
+    const idx = products.findIndex(p => p.id === productId);
+    if (idx === -1) throw new Error('Product not found');
+    products[idx] = { ...products[idx], ...productData };
+    localStorage.setItem(STORAGE_KEYS.PRODUCTS, JSON.stringify(products));
+    return products[idx];
   },
 
   deleteProduct: async (productId) => {

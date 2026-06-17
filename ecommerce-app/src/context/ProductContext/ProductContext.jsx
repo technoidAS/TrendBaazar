@@ -19,22 +19,83 @@ export function ProductProvider({ children }) {
   const [error, setError] = useState(null);
   const [filters, setFilters] = useState(DEFAULT_FILTERS);
   const [wishlist, setWishlist] = useState([]);
+  const [hasMore, setHasMore] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [categories, setCategories] = useState([]);
 
-  // Fetch catalog on mount
-  useEffect(() => {
-    const fetchProducts = async () => {
-      setLoading(true);
-      try {
-        const data = await productService.getProducts();
-        setProducts(data);
-      } catch (err) {
-        setError(err.message || 'Failed to load products');
-      } finally {
-        setLoading(false);
+  // Fetch products from backend based on current filters and page
+  const fetchProducts = useCallback(async (page = 1, isAppend = false) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const params = {
+        page,
+        pageSize: 12,
+      };
+
+      if (filters.category && filters.category !== 'all') {
+        params.category = filters.category;
       }
-    };
-    fetchProducts();
-  }, []);
+      if (filters.searchQuery && filters.searchQuery.trim()) {
+        params.search = filters.searchQuery;
+      }
+      if (filters.brand && filters.brand !== 'all') {
+        params.brand = filters.brand;
+      }
+      if (filters.minRating > 0) {
+        params.minRating = filters.minRating;
+      }
+      if (filters.priceRange) {
+        params.minPrice = filters.priceRange[0];
+        params.maxPrice = filters.priceRange[1];
+      }
+      if (filters.sortBy) {
+        if (filters.sortBy === 'price-low-high') {
+          params.sortBy = 'price_asc';
+        } else if (filters.sortBy === 'price-high-low') {
+          params.sortBy = 'price_desc';
+        } else {
+          params.sortBy = filters.sortBy;
+        }
+      }
+
+      const data = await productService.getProducts(params);
+      const newProducts = data.products || [];
+
+      if (isAppend) {
+        setProducts(prev => [...prev, ...newProducts]);
+      } else {
+        setProducts(newProducts);
+      }
+
+      setHasMore(data.hasMore ?? false);
+      setCurrentPage(data.page ?? page);
+    } catch (err) {
+      setError(err.message || 'Failed to load products');
+    } finally {
+      setLoading(false);
+    }
+  }, [filters]);
+
+  // Fetch categories matching the active search query
+  const fetchCategories = async (search = '') => {
+    try {
+      const data = await productService.getCategories(search);
+      setCategories(data);
+    } catch (err) {
+      console.error('[Product Context] Failed to load categories:', err);
+    }
+  };
+
+  // Trigger search-scoped categories reload
+  useEffect(() => {
+    fetchCategories(filters.searchQuery);
+  }, [filters.searchQuery]);
+
+  // Reset page and reload products on filter changes
+  useEffect(() => {
+    fetchProducts(1, false);
+  }, [fetchProducts]);
 
   // Load wishlist from local storage on mount
   useEffect(() => {
@@ -66,7 +127,6 @@ export function ProductProvider({ children }) {
       if (prev[key] === value) {
         return prev;
       }
-
       return {
         ...prev,
         [key]: value,
@@ -78,49 +138,11 @@ export function ProductProvider({ children }) {
     setFilters(DEFAULT_FILTERS);
   }, []);
 
-  // Resolve active products list after filters and sorting have been applied
-  const getFilteredProducts = () => {
-    let result = [...products];
-
-    // Filter by Category
-    if (filters.category !== 'all') {
-      result = result.filter(p => p.category === filters.category);
+  const loadMore = useCallback(() => {
+    if (!loading && hasMore) {
+      fetchProducts(currentPage + 1, true);
     }
-
-    // Filter by Search text
-    if (filters.searchQuery.trim()) {
-      const q = filters.searchQuery.toLowerCase();
-      result = result.filter(
-        p => p.name.toLowerCase().includes(q) || p.description.toLowerCase().includes(q)
-      );
-    }
-
-    // Filter by Price range
-    result = result.filter(
-      p => p.price >= filters.priceRange[0] && p.price <= filters.priceRange[1]
-    );
-
-    // Filter by Brand
-    if (filters.brand && filters.brand !== 'all') {
-      result = result.filter(p => p.brand === filters.brand);
-    }
-
-    // Filter by Rating
-    if (filters.minRating > 0) {
-      result = result.filter(p => p.rating >= filters.minRating);
-    }
-
-    // Sort products
-    if (filters.sortBy === 'price-low-high') {
-      result.sort((a, b) => a.price - b.price);
-    } else if (filters.sortBy === 'price-high-low') {
-      result.sort((a, b) => b.price - a.price);
-    } else if (filters.sortBy === 'rating') {
-      result.sort((a, b) => b.rating - a.rating);
-    } // 'featured' keeps original seed ordering
-
-    return result;
-  };
+  }, [loading, hasMore, currentPage, fetchProducts]);
 
   return (
     <ProductContext.Provider
@@ -130,11 +152,15 @@ export function ProductProvider({ children }) {
         error,
         filters,
         wishlist,
+        categories,
+        hasMore,
+        currentPage,
         setFilter,
         resetFilters,
         toggleWishlist,
         isWishlisted,
-        filteredProducts: getFilteredProducts(),
+        filteredProducts: products,
+        loadMore,
       }}
     >
       {children}

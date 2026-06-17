@@ -26,6 +26,29 @@ public class AuthResponseDto
     public UserProfileDto User { get; set; } = null!;
 }
 
+public class AuthFlowResponseDto
+{
+    public string Message { get; set; } = string.Empty;
+    public string NextStep { get; set; } = string.Empty;
+    public bool UserExists { get; set; }
+}
+
+public class SignupRequestDto
+{
+    [Required]
+    [Phone]
+    public string Phone { get; set; } = null!;
+
+    [Required]
+    public string Name { get; set; } = null!;
+
+    public string Email { get; set; } = string.Empty;
+
+    public string Avatar { get; set; } = string.Empty;
+
+    public string Address { get; set; } = string.Empty;
+}
+
 public class UserProfileDto
 {
     public string Id { get; set; } = null!;
@@ -33,6 +56,7 @@ public class UserProfileDto
     public string Name { get; set; } = null!;
     public string Email { get; set; } = "";
     public string Avatar { get; set; } = "";
+    public string Address { get; set; } = "";
     public string Role { get; set; } = "customer";
     public List<AddressDto> Addresses { get; set; } = new();
 }

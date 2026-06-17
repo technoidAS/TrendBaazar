@@ -27,22 +27,74 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("otp-request")]
-    public IActionResult RequestOtp([FromBody] OtpRequestDto request)
+    public async Task<IActionResult> RequestOtp([FromBody] OtpRequestDto request)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
 
-        var code = _otpService.GenerateOtp(request.Phone);
+        var phone = request.Phone.Trim();
+        var userExists = await _context.Users.AnyAsync(u => u.Phone == phone);
+        if (!userExists)
+        {
+            return Ok(new AuthFlowResponseDto
+            {
+                Message = "No account found for this phone number. Please sign up first.",
+                NextStep = "signup",
+                UserExists = false
+            });
+        }
+
+        var code = _otpService.GenerateOtp(phone);
         
         // Log the generated OTP code to the backend console (standard terminal output)
         Console.WriteLine("\n==================================================");
-        Console.WriteLine($"[SMS GATEWAY SIMULATOR] Dispatched OTP code '{code}' to phone '{request.Phone}'");
+        Console.WriteLine($"[SMS GATEWAY SIMULATOR] Dispatched OTP code '{code}' to phone '{phone}'");
         Console.WriteLine("==================================================\n");
         
-        // Return a clean response without exposing the OTP code in the JSON payload
-        return Ok(new { message = "OTP sent successfully. Please check your backend terminal console for the verification code." });
+        return Ok(new AuthFlowResponseDto
+        {
+            Message = "OTP sent successfully. Please check your backend terminal console for the verification code.",
+            NextStep = "verify",
+            UserExists = true
+        });
+    }
+
+    [HttpPost("signup")]
+    public async Task<IActionResult> Signup([FromBody] SignupRequestDto request)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        var phone = request.Phone.Trim();
+        var existingUser = await _context.Users.AnyAsync(u => u.Phone == phone);
+        if (existingUser)
+        {
+            return Conflict(new { message = "An account already exists for this phone number. Please log in instead." });
+        }
+
+        var user = new User
+        {
+            Phone = phone,
+            Name = request.Name.Trim(),
+            Email = request.Email?.Trim() ?? string.Empty,
+            Avatar = request.Avatar?.Trim() ?? string.Empty,
+            Address = request.Address?.Trim() ?? string.Empty,
+            Role = phone == "9999999999" ? "admin" : "customer"
+        };
+
+        _context.Users.Add(user);
+        await _context.SaveChangesAsync();
+
+        return Ok(new AuthFlowResponseDto
+        {
+            Message = "Account created successfully. Request OTP to continue.",
+            NextStep = "otp-request",
+            UserExists = true
+        });
     }
 
     [HttpPost("otp-verify")]
@@ -53,31 +105,21 @@ public class AuthController : ControllerBase
             return BadRequest(ModelState);
         }
 
-        var isValid = _otpService.VerifyOtp(request.Phone, request.Code);
+        var phone = request.Phone.Trim();
+
+        var user = await _context.Users
+            .Include(u => u.Addresses)
+            .FirstOrDefaultAsync(u => u.Phone == phone);
+
+        if (user == null)
+        {
+            return NotFound(new { message = "No account found for this phone number. Please sign up first." });
+        }
+
+        var isValid = _otpService.VerifyOtp(phone, request.Code);
         if (!isValid)
         {
             return BadRequest(new { message = "Invalid OTP code. Please check your backend console/logs for the correct code that was printed when you requested the OTP." });
-        }
-
-        // Find or create User, including their addresses
-        var user = await _context.Users
-            .Include(u => u.Addresses)
-            .FirstOrDefaultAsync(u => u.Phone == request.Phone);
-            
-        if (user == null)
-        {
-            user = new User
-            {
-                Phone = request.Phone,
-                Name = $"User {request.Phone[^4..]}", // default name using last 4 digits
-                Role = request.Phone == "9999999999" ? "admin" : "customer" // Automatically make 9999999999 admin
-            };
-            
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
-            
-            // Reload user with empty addresses loaded to avoid null references
-            user.Addresses = new List<AddressBook>();
         }
 
         var token = _tokenService.GenerateToken(user);
@@ -89,6 +131,7 @@ public class AuthController : ControllerBase
             Name = user.Name,
             Email = user.Email,
             Avatar = user.Avatar,
+            Address = user.Address,
             Role = user.Role,
             Addresses = user.Addresses.Select(a => new AddressDto
             {
@@ -132,6 +175,7 @@ public class AuthController : ControllerBase
             Name = user.Name,
             Email = user.Email,
             Avatar = user.Avatar,
+            Address = user.Address,
             Role = user.Role,
             Addresses = user.Addresses.Select(a => new AddressDto
             {

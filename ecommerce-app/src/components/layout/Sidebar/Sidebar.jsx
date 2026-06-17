@@ -1,11 +1,11 @@
 import React from 'react';
 import { Star, RefreshCw } from 'lucide-react';
 import { useProducts } from '../../../context/ProductContext/ProductContext';
-import { PRODUCT_CATEGORIES, SORT_OPTIONS } from '../../../utils/constants';
+import { SORT_OPTIONS } from '../../../utils/constants';
 import './Sidebar.css';
 
 export function Sidebar() {
-  const { filters, setFilter, resetFilters, products } = useProducts();
+  const { filters, setFilter, resetFilters, products, categories } = useProducts();
 
   const handleCategorySelect = (category) => {
     setFilter('category', category);
@@ -22,6 +22,12 @@ export function Sidebar() {
 
   const handleSortChange = (e) => {
     setFilter('sortBy', e.target.value);
+  };
+
+  // Helper to capitalize first letter
+  const formatCategoryName = (cat) => {
+    if (!cat) return '';
+    return cat.charAt(0).toUpperCase() + cat.slice(1);
   };
 
   // Extract unique brands dynamically from products list
@@ -48,13 +54,19 @@ export function Sidebar() {
       <div className="sidebar-section">
         <h4 className="sidebar-section-title">Categories</h4>
         <div className="sidebar-categories-list">
-          {PRODUCT_CATEGORIES.map((cat) => (
+          <button
+            className={`category-filter-item ${filters.category === 'all' ? 'category-active' : ''}`}
+            onClick={() => handleCategorySelect('all')}
+          >
+            All Products
+          </button>
+          {categories.map((catName) => (
             <button
-              key={cat.id}
-              className={`category-filter-item ${filters.category === cat.id ? 'category-active' : ''}`}
-              onClick={() => handleCategorySelect(cat.id)}
+              key={catName}
+              className={`category-filter-item ${filters.category === catName ? 'category-active' : ''}`}
+              onClick={() => handleCategorySelect(catName)}
             >
-              {cat.name}
+              {formatCategoryName(catName)}
             </button>
           ))}
         </div>

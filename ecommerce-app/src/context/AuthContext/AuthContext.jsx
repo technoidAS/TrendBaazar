@@ -36,6 +36,18 @@ export function AuthProvider({ children }) {
     }
   };
 
+  const signup = async (payload) => {
+    setError(null);
+    try {
+      const result = await authService.signup(payload);
+      return result;
+    } catch (err) {
+      const msg = err.message || 'Failed to create account';
+      setError(msg);
+      throw new Error(msg);
+    }
+  };
+
   const verifyOtp = async (phone, otp) => {
     setError(null);
     try {
@@ -83,6 +95,7 @@ export function AuthProvider({ children }) {
         loading,
         error,
         requestOtp,
+        signup,
         verifyOtp,
         logout,
         updateProfile,

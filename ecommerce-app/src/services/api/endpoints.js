@@ -4,6 +4,7 @@
 export const endpoints = {
   // Auth endpoints (AuthController)
   OTP_REQUEST: '/auth/otp-request',   // POST - send OTP to phone
+  SIGNUP: '/auth/signup',              // POST - create a new user account
   OTP_VERIFY: '/auth/otp-verify',     // POST - verify OTP and receive JWT token
   ME: '/auth/me',                      // GET  - get current authenticated user (requires JWT)
 
@@ -12,6 +13,7 @@ export const endpoints = {
   BASE_PRODUCT: '/products',           // Base path for dynamic routes like /products/{id}/rate
   PRODUCTS_FEATURED: '/products/featured', // GET  - featured products only
   PRODUCTS_BRANDS: '/products/brands',     // GET  - distinct brand names
+  PRODUCTS_CATEGORIES: '/products/categories', // GET - categories matching search
 
   // Profile endpoints (ProfileController — requires JWT)
   PROFILE: '/profile',                 // PUT  - update own profile
