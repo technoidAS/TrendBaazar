@@ -1,0 +1,33 @@
+services:
+  # 1. Backend Web Service (ASP.NET Core Web API using Docker)
+  - type: web
+    name: trendbaazar-backend
+    runtime: docker
+    rootDir: ecommerce-backend
+    plan: free
+    envVars:
+      - key: ConnectionStrings__DefaultConnection
+        sync: false # Set this value in Render Dashboard to your SQL Server connection string
+      - key: Jwt__Key
+        value: super_secret_trendbaazar_jwt_auth_key_12345!
+      - key: Jwt__Issuer
+        value: TrendBaazarIssuer
+      - key: Jwt__Audience
+        value: TrendBaazarAudience
+
+  # 2. Frontend Web Service (React Static Site)
+  - type: web
+    name: trendbaazar-frontend
+    runtime: static
+    rootDir: ecommerce-app
+    buildCommand: npm install && npm run build
+    publishDir: dist
+    envVars:
+      - key: VITE_DATA_SOURCE
+        value: api
+      - key: VITE_API_URL
+        fromService:
+          name: trendbaazar-backend
+          type: web
+          property: url
+        value: /api # fallback / base path construction
