@@ -86,6 +86,16 @@ public class AuthController : ControllerBase
             Role = phone == "9999999999" ? "admin" : "customer"
         };
 
+        if (!string.IsNullOrEmpty(request.Address))
+        {
+            user.Addresses.Add(new AddressBook
+            {
+                Name = request.Name.Trim(),
+                Phone = phone,
+                Address = request.Address.Trim()
+            });
+        }
+
         _context.Users.Add(user);
         await _context.SaveChangesAsync();
 

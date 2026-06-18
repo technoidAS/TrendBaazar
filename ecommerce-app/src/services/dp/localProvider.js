@@ -592,7 +592,14 @@ export const localProvider = {
       email: payload?.email || '',
       avatar: payload?.avatar || '',
       address: payload?.address || '',
-      addresses: [],
+      addresses: payload?.address ? [
+        {
+          id: generateId('addr'),
+          name: name,
+          phone: phone,
+          address: payload.address.trim()
+        }
+      ] : [],
       role: phone.replace(/\D/g, '') === '9999999999' ? 'admin' : 'customer'
     };
 
