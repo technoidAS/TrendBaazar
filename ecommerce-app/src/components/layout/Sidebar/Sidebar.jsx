@@ -8,6 +8,7 @@ export function Sidebar() {
   const { filters, setFilter, resetFilters, products, categories } = useProducts();
 
   const handleCategorySelect = (category) => {
+    setFilter('searchQuery', '');
     setFilter('category', category);
   };
 

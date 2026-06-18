@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { ShoppingBag, Heart, Sun, Moon, User, LogOut, ShieldAlert, Search, X } from 'lucide-react';
 import { useAuth } from '../../../context/AuthContext/AuthContext';
 import { useCart } from '../../../hooks/useCart';
@@ -16,6 +16,8 @@ export function Navbar() {
   const { isDark, toggleTheme } = useTheme();
   const { addToast } = useToast();
   const navigate = useNavigate();
+  const location = useLocation();
+  const prevPathnameRef = useRef(location.pathname);
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -23,6 +25,8 @@ export function Navbar() {
   const profileRef = useRef(null);
   const searchRef = useRef(null);
   const searchInputRef = useRef(null);
+  const isTypingRef = useRef(false);
+
 
   const cartCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
 
@@ -52,20 +56,44 @@ export function Navbar() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  const locationRef = useRef(location);
   useEffect(() => {
+    locationRef.current = location;
+  }, [location]);
+
+  // Sync input value with global filter search query (e.g. when cleared from sidebar categories)
+  useEffect(() => {
+    setSearchQuery(filters.searchQuery || '');
+  }, [filters.searchQuery]);
+
+  // Reset/clear search input when navigating away from shop
+  useEffect(() => {
+    if (prevPathnameRef.current === '/shop' && location.pathname !== '/shop') {
+      setSearchQuery('');
+      setFilter('searchQuery', '');
+    }
+    prevPathnameRef.current = location.pathname;
+  }, [location.pathname, setFilter]);
+
+  useEffect(() => {
+    if (!isTypingRef.current) return;
     const trimmedQuery = debouncedSearchQuery.trim();
     if (trimmedQuery) {
       setFilter('category', 'all');
       setFilter('searchQuery', trimmedQuery);
-      navigate('/shop');
+      if (locationRef.current.pathname !== '/shop') {
+        navigate('/shop');
+      }
     } else {
       setFilter('searchQuery', '');
     }
+    isTypingRef.current = false;
   }, [debouncedSearchQuery, navigate, setFilter]);
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
     if (searchQuery.trim()) {
+      isTypingRef.current = false;
       setFilter('category', 'all');
       setFilter('searchQuery', searchQuery.trim());
       navigate('/shop');
@@ -112,7 +140,10 @@ export function Navbar() {
                   className="navbar-search-input"
                   placeholder="Search products..."
                   value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onChange={(e) => {
+                    isTypingRef.current = true;
+                    setSearchQuery(e.target.value);
+                  }}
                   onKeyDown={(e) => e.key === 'Escape' && setSearchOpen(false)}
                 />
               </form>

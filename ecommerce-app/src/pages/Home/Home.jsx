@@ -11,10 +11,10 @@ import ProductCard from '../../components/common/ProductCard/ProductCard';
 import './Home.css';
 
 const SHOWCASE_ITEMS = [
-  { id: 1, type: 'Apparel', name: 'Urban Shell Jacket', price: '₹5,499', image: 'https://images.unsplash.com/photo-1556911220-e15b29be8c8f?w=600&auto=format&fit=crop&q=80' },
-  { id: 2, type: 'Featured Drop', name: 'Quantum Flux Sneakers', price: '₹9,999', image: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=800&auto=format&fit=crop&q=80' },
+  { id: 1, type: 'Featured Drop', name: 'Quantum Flux Sneakers', price: '₹9,999', image: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=800&auto=format&fit=crop&q=80' },
+  { id: 8, type: 'Apparel', name: 'Urban Shell Jacket', price: '₹5,499', image: 'https://images.unsplash.com/photo-1556911220-e15b29be8c8f?w=600&auto=format&fit=crop&q=80' },
   { id: 3, type: 'Gadgets', name: 'Aero Noise-Cancelling', price: '₹12,999', image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600&auto=format&fit=crop&q=80' },
-  { id: 4, type: 'Accessories', name: 'Tactical Backpack', price: '₹3,299', image: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=600&auto=format&fit=crop&q=80' },
+  { id: 5, type: 'Accessories', name: 'Tactical Backpack', price: '₹3,299', image: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=600&auto=format&fit=crop&q=80' },
   { id: 5, type: 'Tech', name: 'Holo Smartwatch', price: '₹15,499', image: 'https://images.unsplash.com/photo-1546868871-7041f2a55e12?w=600&auto=format&fit=crop&q=80' }
 ];
 

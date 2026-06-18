@@ -60,7 +60,8 @@ export function Admin() {
   const [showAddModal, setShowAddModal]     = useState(false);
   const [newProd, setNewProd] = useState({
     name: '', price: '', category: 'apparel', brand: '',
-    colors: '', sizes: '', image: '', desc: '', stock: '10'
+    colors: '', sizes: '', image: '', desc: '', stock: '10',
+    features: '', images: '', featured: false
   });
   const [formError, setFormError]   = useState('');
   const [actionLoading, setActionLoading] = useState(false);
@@ -206,19 +207,26 @@ export function Admin() {
     }
     setActionLoading(true);
     try {
+      const additionalImages = newProd.images ? newProd.images.split(',').map(img => img.trim()).filter(Boolean) : [];
+      const imagesPayload = [newProd.image, ...additionalImages];
+
       const result = await productService.addProduct({
         name: newProd.name,
         price: priceNum,
         category: newProd.category,
         brand: newProd.brand || 'TrendBaazar',
         image: newProd.image,
+        images: imagesPayload,
         description: newProd.desc || 'Premium e-commerce design edition.',
         stock: parseInt(newProd.stock) || 10,
         colors: newProd.colors ? newProd.colors.split(',').map(c => c.trim()).filter(Boolean) : [],
         sizes: newProd.sizes ? newProd.sizes.split(',').map(s => s.trim()).filter(Boolean) : [],
-        features: []
+        features: newProd.features ? newProd.features.split(',').map(f => f.trim()).filter(Boolean) : [],
+        featured: newProd.featured,
+        rating: 5.0,
+        reviewCount: 0
       });
-      const item = result || { id: Date.now().toString(), ...newProd, price: priceNum };
+      const item = result || { id: Date.now().toString(), ...newProd, price: priceNum, categoryName: newProd.category };
       allProductsRef.current = [item, ...allProductsRef.current];
       setProducts(prev => [item, ...prev]);
       closeModal();
@@ -234,7 +242,11 @@ export function Admin() {
   const closeModal = () => {
     setShowAddModal(false);
     setFormError('');
-    setNewProd({ name: '', price: '', category: 'apparel', brand: '', colors: '', sizes: '', image: '', desc: '', stock: '10' });
+    setNewProd({
+      name: '', price: '', category: 'apparel', brand: '',
+      colors: '', sizes: '', image: '', desc: '', stock: '10',
+      features: '', images: '', featured: false
+    });
   };
 
   // ---- Delete Product ----
@@ -582,9 +594,9 @@ export function Admin() {
                       value={newProd.category}
                       onChange={e => updateProd('category', e.target.value)}
                     >
-                      <option value="apparel">Premium Apparel</option>
-                      <option value="footwear">Design Footwear</option>
-                      <option value="gadgets">Sci-fi Gadgets</option>
+                      <option value="apparel">Apparel</option>
+                      <option value="footwear">Footwear</option>
+                      <option value="gadgets">Gadgets</option>
                       <option value="accessories">Accessories</option>
                     </select>
                     <ChevronDown size={14} className="modal-select-chevron" />
@@ -617,6 +629,19 @@ export function Admin() {
                 />
               </div>
 
+              {/* Row: Additional Images */}
+              <div className="modal-field-full">
+                <label className="modal-label">
+                  <Image size={13} /> Additional Image URLs <span className="modal-hint">(comma-separated list)</span>
+                </label>
+                <input
+                  className="modal-input"
+                  placeholder="https://images.unsplash.com/photo-1..., https://images.unsplash.com/photo-2..."
+                  value={newProd.images}
+                  onChange={e => updateProd('images', e.target.value)}
+                />
+              </div>
+
               {/* Row: Colors + Sizes */}
               <div className="modal-fields-row">
                 <div className="modal-field">
@@ -641,6 +666,33 @@ export function Admin() {
                     onChange={e => updateProd('sizes', e.target.value)}
                   />
                 </div>
+              </div>
+
+              {/* Row: Features */}
+              <div className="modal-field-full">
+                <label className="modal-label">
+                  <AlignLeft size={13} /> Highlights / Features <span className="modal-hint">(comma-separated)</span>
+                </label>
+                <input
+                  className="modal-input"
+                  placeholder="Waterproof membrane, Comfort drop-shoulder cut"
+                  value={newProd.features}
+                  onChange={e => updateProd('features', e.target.value)}
+                />
+              </div>
+
+              {/* Row: Featured Checkbox */}
+              <div className="modal-field-full" style={{ flexDirection: 'row', alignItems: 'center', gap: '8px', margin: 'var(--space-2xs) 0' }}>
+                <input
+                  type="checkbox"
+                  id="featured-checkbox"
+                  checked={newProd.featured}
+                  onChange={e => updateProd('featured', e.target.checked)}
+                  style={{ width: '18px', height: '18px', cursor: 'pointer', accentColor: 'var(--primary)' }}
+                />
+                <label htmlFor="featured-checkbox" style={{ margin: 0, cursor: 'pointer', fontSize: 'var(--font-size-sm)', fontWeight: 'var(--weight-semibold)', color: 'var(--text-secondary)', textTransform: 'none', letterSpacing: '0' }}>
+                  Make this a Featured Product (shows up in Featured Drops)
+                </label>
               </div>
 
               {/* Row: Description */}
